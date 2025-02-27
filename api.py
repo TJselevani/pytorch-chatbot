@@ -81,7 +81,13 @@ def chat(user_message: UserMessage):
     
     if prob.item() > 0.75 and tag in intents_data:
         response = random.choice(intents_data[tag]["responses"])
-        return {"bot": bot_name, "response": response}
+        return {
+            "you": user_message.message,
+            f"{bot_name}": f"{response}"
+        }
     
-    return {"bot": bot_name, "response": "I do not understand..."}
+    return {
+        "you": user_message.message,
+        f"{bot_name}": f"I do not understand..."
+    }
 
