@@ -1,0 +1,12 @@
+python -c "import nltk; nltk.download('punkt')"
+python -c "import nltk; nltk.download('punkt_tab')"
+
+
+https://github.com/patrickloeber/pytorch-chatbot?tab=readme-ov-file
+
+pip install fastapi uvicorn
+
+Swagger UI: http://127.0.0.1:8000/docs
+
+Redoc UI: http://127.0.0.1:8000/redoc
+

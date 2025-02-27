@@ -1,37 +1,53 @@
+import os
+import subprocess
+
+# Ensuring the database is created and populated before training
+if not os.path.exists("db_initialized.txt"):
+    print("🔹 Setting up the database...")
+    subprocess.run(["python", "database/create_db.py"])
+    subprocess.run(["python", "database/create_db_data.py"])
+
+    # Create a flag file to avoid re-running setup every time
+    open("db_initialized.txt", "w").close()
+    print("✅ Database setup completed!")
+
+# Now proceed with training
 import numpy as np
 import random
-import json
-
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 from nltk_utils import bag_of_words, tokenize, stem
 from model import NeuralNet
+from database.db_connection import conn, cursor
 
-with open('intents.json', 'r') as f:
-    intents = json.load(f)
+# Fetch intents and their patterns
+cursor.execute("SELECT id, tag FROM intents")
+intents = cursor.fetchall()
 
 all_words = []
 tags = []
 xy = []
-# loop through each sentence in our intents patterns
-for intent in intents['intents']:
-    tag = intent['tag']
-    # add to tag list
+
+for intent_id, tag in intents:
     tags.append(tag)
-    for pattern in intent['patterns']:
-        # tokenize each word in the sentence
+
+    # Fetch patterns for the current intent
+    cursor.execute("SELECT pattern FROM patterns WHERE intent_id = %s", (intent_id,))
+    patterns = [row[0] for row in cursor.fetchall()]
+
+    for pattern in patterns:
         w = tokenize(pattern)
-        # add to our words list
         all_words.extend(w)
-        # add to xy pair
         xy.append((w, tag))
 
-# stem and lower each word
+# Close database connection
+conn.close()
+
+# Stem and preprocess words
 ignore_words = ['?', '.', '!']
 all_words = [stem(w) for w in all_words if w not in ignore_words]
-# remove duplicates and sort
 all_words = sorted(set(all_words))
 tags = sorted(set(tags))
 
