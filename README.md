@@ -84,10 +84,18 @@ Run
 python train.py
 ```
 
-This will dump `data.pth` file. And then run
+This will dump `data.pth` file. And then run to use terminal
 
 ```console
 python chat.py
+```
+
+Run this to use fastAPI endpoint
+
+```console
+pip install fastapi uvicorn
+
+uvicorn api:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ## Customize
