@@ -1,11 +1,13 @@
 import mysql.connector
+from config import DB_CONFIG
 
-# Connect to MySQL
+# Create database connection
 conn = mysql.connector.connect(
-    host="localhost",      # Change if using a remote MySQL server
-    user="superuser",      # Your MySQL username
-    password="developer",  # Your MySQL password
-    database="chatbot_db"  # The MySQL database you created
+    host=DB_CONFIG["host"],
+    user=DB_CONFIG["user"],
+    password=DB_CONFIG["password"],
+    database=DB_CONFIG["database"]
 )
 
+# Create cursor
 cursor = conn.cursor()

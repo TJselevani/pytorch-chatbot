@@ -136,3 +136,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# trained data and the database init file
+data.pth
+db_initialized.txt
