@@ -84,13 +84,19 @@ DB_CONFIG  = {
 }
 ```
 
-Run
+Run this first
 
 ```console
 python run.py
 ```
 
 This will dump `training_data.pth` file and setup the database.
+
+to use the chatbot on terminal
+
+```console
+python chat.py
+```
 
 ## Customize
 

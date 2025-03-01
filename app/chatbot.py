@@ -1,4 +1,3 @@
-# chatbot.py
 import os
 import sys
 import random

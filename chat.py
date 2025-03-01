@@ -1,17 +1,15 @@
 import random
-import json
-
 import torch
-
-from model import NeuralNet
-from nltk_utils import bag_of_words, tokenize
+import mysql.connector
+from utils.nltk_utils import bag_of_words, tokenize
+from database.db_connection import conn, cursor
+from config import TRAINING_DATA_FILE
+from models.neural_net import NeuralNet
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-with open('intents.json', 'r') as json_data:
-    intents = json.load(json_data)
-
-FILE = "data.pth"
+# Load model data
+FILE = TRAINING_DATA_FILE #"data/training_data.pth"
 data = torch.load(FILE)
 
 input_size = data["input_size"]
@@ -24,6 +22,23 @@ model_state = data["model_state"]
 model = NeuralNet(input_size, hidden_size, output_size).to(device)
 model.load_state_dict(model_state)
 model.eval()
+
+# Load intents from MySQL database
+cursor.execute("SELECT id, tag FROM intents")
+intents = cursor.fetchall()
+
+intents_data = {}
+
+for intent_id, tag in intents:
+    # Fetch patterns
+    cursor.execute("SELECT pattern FROM patterns WHERE intent_id = %s", (intent_id,))
+    patterns = [row[0] for row in cursor.fetchall()]
+
+    # Fetch responses
+    cursor.execute("SELECT response FROM responses WHERE intent_id = %s", (intent_id,))
+    responses = [row[0] for row in cursor.fetchall()]
+
+    intents_data[tag] = {"patterns": patterns, "responses": responses}
 
 bot_name = "Sam"
 print("Let's chat! (type 'quit' to exit)")
@@ -45,9 +60,8 @@ while True:
 
     probs = torch.softmax(output, dim=1)
     prob = probs[0][predicted.item()]
-    if prob.item() > 0.75:
-        for intent in intents['intents']:
-            if tag == intent["tag"]:
-                print(f"{bot_name}: {random.choice(intent['responses'])}")
+    
+    if prob.item() > 0.75 and tag in intents_data:
+        print(f"{bot_name}: {random.choice(intents_data[tag]['responses'])}")
     else:
         print(f"{bot_name}: I do not understand...")
