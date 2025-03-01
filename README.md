@@ -65,38 +65,32 @@ Or have other errors such as `punkt_tab`:
 python -c "import nltk; nltk.download('punkt_tab')"
 ```
 
-## Usage
-
-Configure SQL database in the db_connection.py file inside database folder
+Run this to use fastAPI endpoint
 
 ```console
-conn = mysql.connector.connect(
-    host="",     # Change if using a remote MySQL server
-    user="",     # Your MySQL username
-    password="", # Your MySQL password
-    database=""  # The MySQL database you created
-)
+pip install fastapi uvicorn
+```
+
+## Usage
+
+Configure SQL database connection details in the config.py file
+
+```console
+DB_CONFIG  = {
+    "host"="",     # Change if using a remote MySQL server
+    "user"="",     # Your MySQL username
+    "password"="", # Your MySQL password
+    "database"=""  # The MySQL database you created
+}
 ```
 
 Run
 
 ```console
-python train.py
+python run.py
 ```
 
-This will dump `data.pth` file. And then run to use terminal
-
-```console
-python chat.py
-```
-
-Run this to use fastAPI endpoint
-
-```console
-pip install fastapi uvicorn
-
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
+This will dump `training_data.pth` file and setup the database.
 
 ## Customize
 
