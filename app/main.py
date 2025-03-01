@@ -18,7 +18,5 @@ class UserMessage(BaseModel):
 
 @app.post("/chat/")
 def chat(user_message: UserMessage):
-    """
-    Process user message and return chatbot response.
-    """
+    """API endpoint to process user message."""
     return chatbot.process_message(user_message.message)
