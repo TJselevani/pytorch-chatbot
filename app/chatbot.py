@@ -1,10 +1,14 @@
 # chatbot.py
-
+import os
+import sys
 import random
 import torch
-from nltk_utils import bag_of_words, tokenize
-from ..database.db_connection import conn, cursor
-from model import NeuralNet
+from utils.nltk_utils import bag_of_words, tokenize
+from database.db_connection import conn, cursor
+from models.neural_net import NeuralNet
+
+# Add project root to sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class ChatBot:
     def __init__(self, file_path, bot_name):

@@ -138,5 +138,6 @@ dmypy.json
 cython_debug/
 
 # trained data and the database init file
-data.pth
-db_initialized.txt
+data/data.pth
+data/db_initialized.txt
+data/training_data.pth
