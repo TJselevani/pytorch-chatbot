@@ -1,5 +1,3 @@
-# main.py
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 from .chatbot import ChatBot
@@ -14,9 +12,10 @@ chatbot = ChatBot(file_path, bot_name)
 
 # Pydantic model for input validation
 class UserMessage(BaseModel):
+    user_id: str  # Unique identifier for the user
     message: str
 
 @app.post("/chat/")
 def chat(user_message: UserMessage):
     """API endpoint to process user message."""
-    return chatbot.process_message(user_message.message)
+    return chatbot.process_message(user_message.user_id, user_message.message)

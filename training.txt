@@ -1,0 +1,29 @@
+Drivers
+- Nibadilishie OTP kwa hii number 0722000000
+- Sipati OTP kwa line yangu
+- Transfer for me ksh 100 from se00 to se01
+
+{1, 2} 
+    -> sawa, kindly help me with your fleet number
+    -  se01 
+    -> Kindly wait as your request is being processed
+
+{3} -> Okay, Kindly wait as your request is being processed
+
+Passenger
+- How do I book a vehicle
+- Naeza book aje gari
+- Help me book a vehicle from point A to B
+- I payed to the wrong fleet number how do I transfer it to the correct one?
+- How do I load my wallet
+- How do I pay from my wallet
+
+{1, 2}
+
+{4}
+    -> Please share your fleet number in this format, from <se00> to <se01>
+    -  
+    -> Please wait as we process your request
+
+
+

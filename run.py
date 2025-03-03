@@ -1,13 +1,23 @@
 import subprocess
 import os
 import sys
+import signal
 from config import DB_INITIALIZED_FILE, TRAINING_DATA_FILE
+
+def signal_handler(sig, frame):
+    """Handler for SIGINT signal."""
+    print("\n🔴 Received SIGINT, terminating processes...")
+    # Terminate any running subprocesses here if needed
+    sys.exit(0)
 
 def main():
     """
     Runs the setup, data import, training, and app execution.
     """
     try:
+        # Register SIGINT handler
+        signal.signal(signal.SIGINT, signal_handler)
+
         # Create a flag file to avoid re-running setup every time
         if not os.path.exists(DB_INITIALIZED_FILE):
             # Step 1: Set up the database
@@ -30,7 +40,16 @@ def main():
 
         # Step 4: Run the app
         print("🔹 Running the app...")
-        subprocess.run(["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"], check=True)
+        # Use subprocess.Popen instead of subprocess.run for more control
+        app_process = subprocess.Popen(["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"])
+
+        # Wait for the app process to finish
+        try:
+            app_process.wait()
+        except KeyboardInterrupt:
+            print("\n🔴 Received SIGINT, terminating app process...")
+            app_process.terminate()
+            app_process.wait()  # Wait for the process to terminate
 
     except subprocess.CalledProcessError as e:
         print(f"Error running script: {e}")
