@@ -17,7 +17,7 @@ DB_CONFIG = {
     "host": "localhost",
     "user": "superuser",
     "password": "developer",
-    "database": "chatbot_db"
+    "database": "temp_db"
 }
 
 # Model configuration

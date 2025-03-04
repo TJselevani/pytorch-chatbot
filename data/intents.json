@@ -8,38 +8,79 @@
         "How are you",
         "Is anyone there?",
         "Hello",
-        "Good day"
+        "Good day",
+        "Habari",
+        "Jambo",
+        "Mambo",
+        "Shikamoo"
       ],
       "responses": [
         "Hey :-)",
         "Hello, thanks for visiting",
         "Hi there, what can I do for you?",
         "Hi there, how can I help?",
-        "Good day to you too"
+        "Good day to you too",
+        "Habari! Karibu.",
+        "Jambo! Nafurahi kukuona.",
+        "Mambo! Unahitaji msaada gani?",
+        "Shikamoo! Habari yako?"
       ]
     },
     {
       "tag": "goodbye",
-      "patterns": ["Bye", "See you later", "Goodbye"],
+      "patterns": [
+        "Bye",
+        "See you later",
+        "Goodbye",
+        "Kwaheri",
+        "Tutaonana baadaye",
+        "Baadaye"
+      ],
       "responses": [
         "See you later, thanks for visiting",
         "Have a nice day",
-        "Bye! Come back again soon."
+        "Bye! Come back again soon.",
+        "Kwaheri! Asante kwa kutembelea.",
+        "Tutaonana baadaye!",
+        "Baadaye! Karibu tena."
       ]
     },
     {
       "tag": "thanks",
-      "patterns": ["Thanks", "Thank you", "That's helpful", "Thank's a lot!"],
-      "responses": ["Happy to help!", "Any time!", "My pleasure"]
+      "patterns": [
+        "Thanks",
+        "Thank you",
+        "That's helpful",
+        "Thank's a lot!",
+        "Asante",
+        "Shukrani",
+        "Nashukuru"
+      ],
+      "responses": [
+        "Happy to help!",
+        "Any time!",
+        "My pleasure",
+        "Asante sana!",
+        "Karibu!",
+        "Nashukuru, uko huru kuuliza maswali mengine."
+      ]
     },
     {
       "tag": "items",
       "patterns": [
         "Which items do you have?",
         "What kinds of items are there?",
-        "What do you sell?"
+        "What do you sell?",
+        "Una bidhaa gani?",
+        "Unauza nini?",
+        "Mnauza nini?"
       ],
-      "responses": ["We sell coffee and tea", "We have coffee and tea"]
+      "responses": [
+        "We sell coffee and tea",
+        "We have coffee and tea",
+        "Tunauza kahawa na chai",
+        "Tunatoa kahawa na chai"
+      ]
     },
     {
       "tag": "payments",
@@ -47,11 +88,17 @@
         "Do you take credit cards?",
         "Do you accept Mastercard?",
         "Can I pay with Paypal?",
-        "Are you cash only?"
+        "Are you cash only?",
+        "Mnatumia kadi za mkopo?",
+        "Mnakubali Mastercard?",
+        "Naweza kulipa kwa Paypal?",
+        "Mnakubali pesa taslimu tu?"
       ],
       "responses": [
         "We accept VISA, Mastercard and Paypal",
-        "We accept most major credit cards, and Paypal"
+        "We accept most major credit cards, and Paypal",
+        "Tunapokea VISA, Mastercard na Paypal",
+        "Tunapokea kadi kubwa za mkopo na Paypal"
       ]
     },
     {
@@ -59,47 +106,76 @@
       "patterns": [
         "How long does delivery take?",
         "How long does shipping take?",
-        "When do I get my delivery?"
+        "When do I get my delivery?",
+        "Usafirishaji unachukua muda gani?",
+        "Nitapokea mzigo wangu lini?",
+        "Muda wa kufikisha bidhaa ni upi?"
       ],
-      "responses": ["Delivery takes 2-4 days", "Shipping takes 2-4 days"]
+      "responses": [
+        "Delivery takes 2-4 days",
+        "Shipping takes 2-4 days",
+        "Usafirishaji unachukua siku 2-4",
+        "Utaipokea kati ya siku 2 hadi 4"
+      ]
     },
     {
       "tag": "funny",
       "patterns": [
         "Tell me a joke!",
         "Tell me something funny!",
-        "Do you know a joke?"
+        "Do you know a joke?",
+        "Niambie mzaha!",
+        "Unajua mzaha?",
+        "Nichekeshe kidogo!"
       ],
       "responses": [
         "Why did the hipster burn his mouth? He drank the coffee before it was cool.",
-        "What did the buffalo say when his son left for college? Bison."
+        "What did the buffalo say when his son left for college? Bison.",
+        "Kwa nini kuku alivuka barabara? Kwenda upande mwingine!",
+        "Kwa nini nyani alicheka? Aliona ndugu yake kwenye kioo!"
       ]
     },
 
     {
       "tag": "otp_request",
       "patterns": [
-        "Nibadilishie OTP kwa hii number {phone_number}",
-        "Sipati OTP kwa line yangu"
+        "Can you change my OTP for this phone number {phone_number}",
+        "Nibadilishie OTP kwa hii number {phone_number}"
       ],
       "responses": [
-        "Sawa, kindly help me with your fleet number.",
-        "Kindly wait as your request is being processed."
+        "Alright, kindly help me with your fleet number.",
+        "Sawasawa, tafadhali nisaidie na nambari ya gari lako."
+      ],
+      "context_set": "awaiting_fleet_number"
+    },
+    {
+      "tag": "otp_request",
+      "patterns": ["Can I get an OTP on my line", "Sipati OTP kwa line yangu"],
+      "responses": [
+        "Alright, kindly help me with your fleet number.",
+        "Sawa, tafadhali nisaidie na nambari ya gari lako."
       ],
       "context_set": "awaiting_fleet_number"
     },
     {
       "tag": "otp_with_fleet",
       "patterns": ["{fleet_number}"],
-      "responses": ["Kindly wait as your request is being processed."],
+      "responses": [
+        "Kindly wait as your request is being processed.",
+        "Tafadhali subiri ombi lako linashughulikiwa."
+      ],
       "context_filter": "awaiting_fleet_number"
     },
     {
       "tag": "transfer_cash",
       "patterns": [
-        "Transfer for me ksh {amount} from {source_fleet} to {destination_fleet}"
+        "Transfer for me ksh {amount} from {source_fleet} to {destination_fleet}",
+        "Nataka kutuma ksh {amount} from {source_fleet} to {destination_fleet}"
       ],
-      "responses": ["Okay, Kindly wait as your request is being processed."]
+      "responses": [
+        "Okay, Kindly wait as your request is being processed.",
+        "Tafadhali subiri ombi lako linashughulikiwa."
+      ]
     }
   ]
 }

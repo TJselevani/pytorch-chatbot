@@ -46,6 +46,10 @@ def handle_passenger_request(bot_name, user_id, message):
     """Handles passenger inquiries before running intent classification."""
     # Detect message language
     language = detect_language(user_id, message, user_context)
+
+    # Ensure user_context has an entry for this user
+    if user_id not in user_context:
+        user_context[user_id] = {}
     
     # Booking related queries
     booking_keywords = ["book", "naeza book"]

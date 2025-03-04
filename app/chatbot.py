@@ -9,7 +9,6 @@ from models.neural_net import NeuralNet
 from utils.handlers.driver_request import handle_driver_request
 from utils.handlers.passenger_request import handle_passenger_request
 from utils.match import detect_language
-from utils.context import user_context
 from lib.logger import Logger
 
 logger = Logger()
@@ -58,11 +57,6 @@ class ChatBot:
 
     def process_message(self, user_id, message):
         """Processes the user message and returns chatbot response."""
-        # First, check for OTP and transfer-related messages
-        # special_response = handle_driver_request(self.bot_name, user_id, message)
-        # if special_response:
-        #     return special_response
-
         # If no special handling, proceed with intent classification
         sentence = tokenize(message)
         X = bag_of_words(sentence, self.all_words)
@@ -88,6 +82,17 @@ class ChatBot:
         else:
             response = "I do not understand..."
 
+        # First, check for OTP and transfer-related messages
+        special_response = handle_driver_request(self.bot_name, user_id, message, response)
+        if special_response:
+            return special_response
+
+        # Second, check for OTP and transfer-related messages
+        # special_response = handle_passenger_request(self.bot_name, user_id, message)
+        # if special_response:
+        #     return special_response
+
+        # Third return the bot's message
         return {self.bot_name: response}
 
         
