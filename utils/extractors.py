@@ -7,5 +7,10 @@ def extract_phone_number(message: str):
 
 def extract_fleet_number(message: str):
     """Extracts fleet numbers (seXX format) from the message."""
-    match = re.search(r'(se\d+)', message)
-    return match.group(1) if match else None
+    match = re.search(r'(se\d+)', message, re.IGNORECASE)
+    return match.group(1).lower() if match else None
+
+def extract_transfer_details(message: str):
+    """ Extracts amount, source and destination """
+    return re.search(r'transfer\s+for\s+me\s+ksh\s+(\d+)\s+from\s+(se\d+)\s+to\s+(se\d+)', message, re.IGNORECASE)
+

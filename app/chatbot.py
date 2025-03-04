@@ -7,6 +7,12 @@ from utils.nltk_utils import bag_of_words, tokenize
 from database.db_connection import cursor
 from models.neural_net import NeuralNet
 from utils.handlers.driver_request import handle_driver_request
+from utils.handlers.passenger_request import handle_passenger_request
+from utils.match import detect_language
+from utils.context import user_context
+from lib.logger import Logger
+
+logger = Logger()
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -32,6 +38,7 @@ class ChatBot:
         self.model = NeuralNet(self.input_size, self.hidden_size, self.output_size).to(self.device)
         self.model.load_state_dict(self.model_state)
         self.model.eval()
+    
 
     def load_intents(self):
         """Fetch intents, patterns, and responses from MySQL database."""
@@ -47,13 +54,14 @@ class ChatBot:
             responses = [row[0] for row in cursor.fetchall()]
 
             self.intents_data[tag] = {"patterns": patterns, "responses": responses}
+    
 
     def process_message(self, user_id, message):
         """Processes the user message and returns chatbot response."""
         # First, check for OTP and transfer-related messages
-        special_response = handle_driver_request(self.bot_name, user_id, message)
-        if special_response:
-            return special_response
+        # special_response = handle_driver_request(self.bot_name, user_id, message)
+        # if special_response:
+        #     return special_response
 
         # If no special handling, proceed with intent classification
         sentence = tokenize(message)
@@ -82,6 +90,7 @@ class ChatBot:
 
         return {self.bot_name: response}
 
+        
     def chat_terminal(self):
         """Run chatbot in terminal mode."""
         print(f"{self.bot_name}: Hello! Type 'quit' to exit.")

@@ -8,79 +8,38 @@
         "How are you",
         "Is anyone there?",
         "Hello",
-        "Good day",
-        "Habari",
-        "Jambo",
-        "Mambo",
-        "Shikamoo"
+        "Good day"
       ],
       "responses": [
         "Hey :-)",
         "Hello, thanks for visiting",
         "Hi there, what can I do for you?",
         "Hi there, how can I help?",
-        "Good day to you too",
-        "Habari! Karibu.",
-        "Jambo! Nafurahi kukuona.",
-        "Mambo! Unahitaji msaada gani?",
-        "Shikamoo! Habari yako?"
+        "Good day to you too"
       ]
     },
     {
       "tag": "goodbye",
-      "patterns": [
-        "Bye",
-        "See you later",
-        "Goodbye",
-        "Kwaheri",
-        "Tutaonana baadaye",
-        "Baadaye"
-      ],
+      "patterns": ["Bye", "See you later", "Goodbye"],
       "responses": [
         "See you later, thanks for visiting",
         "Have a nice day",
-        "Bye! Come back again soon.",
-        "Kwaheri! Asante kwa kutembelea.",
-        "Tutaonana baadaye!",
-        "Baadaye! Karibu tena."
+        "Bye! Come back again soon."
       ]
     },
     {
       "tag": "thanks",
-      "patterns": [
-        "Thanks",
-        "Thank you",
-        "That's helpful",
-        "Thank's a lot!",
-        "Asante",
-        "Shukrani",
-        "Nashukuru"
-      ],
-      "responses": [
-        "Happy to help!",
-        "Any time!",
-        "My pleasure",
-        "Asante sana!",
-        "Karibu!",
-        "Nashukuru, uko huru kuuliza maswali mengine."
-      ]
+      "patterns": ["Thanks", "Thank you", "That's helpful", "Thank's a lot!"],
+      "responses": ["Happy to help!", "Any time!", "My pleasure"]
     },
     {
       "tag": "items",
       "patterns": [
         "Which items do you have?",
         "What kinds of items are there?",
-        "What do you sell?",
-        "Una bidhaa gani?",
-        "Unauza nini?",
-        "Mnauza nini?"
+        "What do you sell?"
       ],
-      "responses": [
-        "We sell coffee and tea",
-        "We have coffee and tea",
-        "Tunauza kahawa na chai",
-        "Tunatoa kahawa na chai"
-      ]
+      "responses": ["We sell coffee and tea", "We have coffee and tea"]
     },
     {
       "tag": "payments",
@@ -88,17 +47,11 @@
         "Do you take credit cards?",
         "Do you accept Mastercard?",
         "Can I pay with Paypal?",
-        "Are you cash only?",
-        "Mnatumia kadi za mkopo?",
-        "Mnakubali Mastercard?",
-        "Naweza kulipa kwa Paypal?",
-        "Mnakubali pesa taslimu tu?"
+        "Are you cash only?"
       ],
       "responses": [
         "We accept VISA, Mastercard and Paypal",
-        "We accept most major credit cards, and Paypal",
-        "Tunapokea VISA, Mastercard na Paypal",
-        "Tunapokea kadi kubwa za mkopo na Paypal"
+        "We accept most major credit cards, and Paypal"
       ]
     },
     {
@@ -106,33 +59,20 @@
       "patterns": [
         "How long does delivery take?",
         "How long does shipping take?",
-        "When do I get my delivery?",
-        "Usafirishaji unachukua muda gani?",
-        "Nitapokea mzigo wangu lini?",
-        "Muda wa kufikisha bidhaa ni upi?"
+        "When do I get my delivery?"
       ],
-      "responses": [
-        "Delivery takes 2-4 days",
-        "Shipping takes 2-4 days",
-        "Usafirishaji unachukua siku 2-4",
-        "Utaipokea kati ya siku 2 hadi 4"
-      ]
+      "responses": ["Delivery takes 2-4 days", "Shipping takes 2-4 days"]
     },
     {
       "tag": "funny",
       "patterns": [
         "Tell me a joke!",
         "Tell me something funny!",
-        "Do you know a joke?",
-        "Niambie mzaha!",
-        "Unajua mzaha?",
-        "Nichekeshe kidogo!"
+        "Do you know a joke?"
       ],
       "responses": [
         "Why did the hipster burn his mouth? He drank the coffee before it was cool.",
-        "What did the buffalo say when his son left for college? Bison.",
-        "Kwa nini kuku alivuka barabara? Kwenda upande mwingine!",
-        "Kwa nini nyani alicheka? Aliona ndugu yake kwenye kioo!"
+        "What did the buffalo say when his son left for college? Bison."
       ]
     },
 
