@@ -144,3 +144,5 @@ data/training_data.pth
 app/save.py
 lib/savefiles/
 
+logs
+
