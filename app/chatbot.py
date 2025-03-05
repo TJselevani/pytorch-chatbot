@@ -11,7 +11,7 @@ from utils.handlers.passenger_request import handle_passenger_request
 from utils.match import detect_language
 from lib.logger import Logger
 
-logger = Logger()
+logger = Logger(name="chatbot", create_separate_log=True)
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -57,6 +57,9 @@ class ChatBot:
 
     def process_message(self, user_id, message):
         """Processes the user message and returns chatbot response."""
+         # Detect language of the message
+        language = detect_language(message)
+
         # If no special handling, proceed with intent classification
         sentence = tokenize(message)
         X = bag_of_words(sentence, self.all_words)
@@ -80,7 +83,13 @@ class ChatBot:
             # If there are matched responses, choose one; otherwise, pick randomly
             response = random.choice(matched_responses) if matched_responses else random.choice(possible_responses)
         else:
-            response = "I do not understand..."
+            # Provide both English and Swahili responses
+            response_map = {
+                "en": "I do not understand. Could you please clarify?",
+                "sw": "Sielewi. Tafadhali fafanua."
+            }
+            
+            response = response_map.get(language, response_map["en"]) 
 
         # First, check for OTP and transfer-related messages
         special_response = handle_driver_request(self.bot_name, user_id, message, response)

@@ -47,27 +47,6 @@ def detect_language(message):
     except:
         return "en"  # Default to English if detection fails
 
-# Detect language from stored intents
-def detect_language_from_patterns(message, intents_data):
-    """Manually detect language based on known patterns in Swahili or English."""
-    message_lower = message.lower()
-
-    sw_patterns = []
-    en_patterns = []
-
-    for intent in intents_data["intents"]:
-        sw_patterns.extend(intent.get("patterns", {}).get("sw", []))
-        en_patterns.extend(intent.get("patterns", {}).get("en", []))
-
-    print(f"Checking '{message}' against: \nSwahili: {sw_patterns}\nEnglish: {en_patterns}")
-
-    if any(pattern.lower() in message_lower for pattern in sw_patterns):
-        return "sw"
-    elif any(pattern.lower() in message_lower for pattern in en_patterns):
-        return "en"
-
-    return "en"
-
 # Function to detect language (default to English if unsure) and store in user context
 def detect_and_store_language(user_id, message, user_context):
     if user_id not in user_context:
