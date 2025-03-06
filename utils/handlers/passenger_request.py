@@ -6,7 +6,6 @@ from utils.services.payment_service import (
     handle_awaiting_transfer_confirmation,
     handle_transfer_request,
 )
-from utils.services.wallet_service import handle_wallet_queries
 from utils.match import is_match, is_pattern
 
 from lib.logger import Logger
@@ -54,10 +53,5 @@ def handle_passenger_request(bot_name, user_id, message, response):
         ):
             logger.debug("Transfer request detected")
             return handle_transfer_request(bot_name, user_id, message, language)
-
-    # {3} Process wallet-related queries
-    response = handle_wallet_queries(bot_name, message, language)
-    if response:
-        return response
 
     return None  # Return None if no special handling is needed

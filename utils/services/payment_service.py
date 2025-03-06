@@ -104,7 +104,7 @@ def handle_awaiting_transfer_confirmation(bot_name, user_id, message, language):
             amount = transfer_details.get("amount")
             source = transfer_details.get("source_fleet")
             destination = transfer_details.get("destination_fleet")
-            logger.debug(f"Transfer confirmed: {amount} from {source} to {destination}")
+            logger.info(f"Transfer confirmed: {amount} from {source} to {destination}")
 
             # Send processing response
             return {bot_name: get_response_text(language, "processing_request")}

@@ -71,7 +71,7 @@ def handle_otp_request(bot_name, user_id, message, language):
     fleet_number = user_context.get(user_id, {}).get("fleet_number")
 
     if phone_number and fleet_number:
-        logger.debug(
+        logger.info(
             f"Processing OTP request with Phone number: {phone_number}, Fleet number: {fleet_number}"
         )
         bot_response = {bot_name: get_response_text(language, "processing_request")}
@@ -129,7 +129,7 @@ def handle_awaiting_otp_details(bot_name, user_id, message, language):
         if fleet_number and phone_number:
             user_context[user_id].pop("awaiting_fleet_and_phone", None)
             bot_response = {bot_name: get_response_text(language, "processing_request")}
-            logger.debug(f"Both details received. Bot Response: {bot_response}")
+            logger.info(f"Both details received. Bot Response: {bot_response}")
             return bot_response
 
         # If still missing details, prompt for the missing one
@@ -137,14 +137,14 @@ def handle_awaiting_otp_details(bot_name, user_id, message, language):
             bot_response = {
                 bot_name: get_response_text(language, "awaiting_fleet_number")
             }
-            logger.debug("Awaiting Fleet Number.")
+            logger.info("Awaiting Fleet Number.")
             return bot_response
 
         if not phone_number:
             bot_response = {
                 bot_name: get_response_text(language, "awaiting_phone_number")
             }
-            logger.debug("Awaiting Phone Number.")
+            logger.info("Awaiting Phone Number.")
             return bot_response
 
     # If user needs to provide fleet number

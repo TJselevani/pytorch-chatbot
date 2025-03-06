@@ -51,7 +51,7 @@ def handle_driver_request(bot_name, user_id, message, response):
     # {1} Check if user is requesting OTP
     otp_keywords = ["otp", "code"]
     if any(is_match(word, message) for word in otp_keywords):
-        logger.debug("OTP request detected")
+        logger.info("OTP request detected")
         return handle_otp_request(bot_name, user_id, message, language)
 
     # {2} Check for cash transfer requests - use is_pattern to detect transfer patterns
@@ -60,7 +60,7 @@ def handle_driver_request(bot_name, user_id, message, response):
         if is_pattern(message, "transfer", "from", "to") or re.search(
             r"\d+(?:\.\d{2})?\s+(se|sm)\d{2}\s+(se|sm)\d{2}", message, re.IGNORECASE
         ):
-            logger.debug("Transfer request detected")
+            logger.info("Transfer request detected")
             return handle_transfer_request(bot_name, user_id, message, language)
 
     # For non-specific interactions after successful processing, reset awaiting flags
