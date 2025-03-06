@@ -1,13 +1,10 @@
-import os
 import re
-import sys
 from utils.context import user_context
-from utils.extractors import extract_phone_number, extract_fleet_number
-from utils.services.otp_request_service import (
+from utils.services.account_service import (
     handle_awaiting_otp_details,
     handle_otp_request,
 )
-from utils.services.transfer_request_service import (
+from utils.services.payment_service import (
     handle_transfer_request,
     handle_awaiting_transfer_confirmation,
 )
@@ -33,7 +30,7 @@ def handle_driver_request(bot_name, user_id, message, response):
     if user_id not in user_context:
         user_context[user_id] = {}
 
-    # First, try to handle awaiting details states
+    # First, try to handle awaiting OTP details states
     await_otp_response = handle_awaiting_otp_details(
         bot_name, user_id, message, language
     )

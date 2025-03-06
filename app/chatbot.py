@@ -112,9 +112,11 @@ class ChatBot:
             return special_response
 
         # Second, check for OTP and transfer-related messages
-        # special_response = handle_passenger_request(self.bot_name, user_id, message)
-        # if special_response:
-        #     return special_response
+        special_response = handle_passenger_request(
+            self.bot_name, user_id, message, response
+        )
+        if special_response:
+            return special_response
 
         # Third return the bot's message
         return {self.bot_name: response}

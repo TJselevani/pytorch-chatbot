@@ -176,6 +176,59 @@
         "Okay, Kindly wait as your request is being processed.",
         "Tafadhali subiri ombi lako linashughulikiwa."
       ]
+    },
+
+    {
+      "tag": "booking_details_request",
+      "patterns": [
+        "How do I book a vehicle?",
+        "Naeza book aje gari?",
+        "Help me book a vehicle from point A to B.",
+        "Naeza book gari kutoka mahali hapa hadi pale?"
+      ],
+      "responses": [
+        "You can book a vehicle by sending a message with the word 'reserve' or 'save' followed by details of your trip: Reserve from <Location A> to <Location B>.",
+
+        "Ili kuweka nafasi ya gari, tafadhali toa maelezo ya mahali ulipo na unakoelekea: Nafasi kutoka <Eneo A> hadi <Eneo B>."
+      ],
+      "context_set": "awaiting_booking_details"
+    },
+
+    {
+      "tag": "fleet_number_correction",
+      "patterns": [
+        "I paid to the wrong fleet number, how do I transfer it to the correct one?",
+        "Nimelipa kwa nambari mbaya ya gari, naweza aje kuhamisha?",
+        "I sent money to the wrong fleet number, what should I do?",
+        "Nimelipa kwa gari isiyo sahihi, naweza kupataje pesa zangu?",
+        "How do I correct a wrong fleet number payment?",
+        "Naeza aje kurekebisha malipo kwa nambari mbaya ya gari?"
+      ],
+      "responses": [
+        "Please share your fleet number details in this format: Transfer <amount> from <se00> to <se01>, and we will process your request.",
+        "Kindly provide the incorrect fleet number and the correct one, and we will assist with the transfer. Transfer <amount> from <se00> to <se01>",
+        "Tafadhali shiriki nambari yako ya gari kwa fomati hii: Transfer kutoka <se00> hadi <se01>, kisha tutashughulikia ombi lako."
+      ],
+      "context_set": "awaiting_fleet_number"
+    },
+
+    {
+      "tag": "wallet_management",
+      "patterns": [
+        "How do I load my wallet?",
+        "Naeza aje kuweka pesa kwenye pochi yangu?",
+        "How can I add money to my wallet?",
+        "How do I pay from my wallet?",
+        "Naeza aje kulipa kutoka kwenye pochi yangu?",
+        "How can I make a payment using my wallet?"
+      ],
+      "responses": [
+        "To load your wallet, use the USSD code *123# and follow the instructions, or send a message with 'LOAD <account_number>' to add funds.",
+        "To pay from your wallet, send 'PAY <amount> <account_number> <fleet_number>' via message, or use *123# to complete the payment.",
+        "Ili kuweka pesa kwenye pochi yako, tumia USSD *123# na ufuate maelekezo, au tuma ujumbe wenye 'LOAD <nambari_ya_akaunti>' kuongeza pesa.",
+        "Ili kulipa kutoka kwa pochi yako, tuma 'PAY <malipo> <nambari_ya_akaunti> <nambari_ya_gari>' kwa ujumbe, au tumia *123# kukamilisha malipo."
+      ],
+      "context_set": ""
     }
   ]
 }

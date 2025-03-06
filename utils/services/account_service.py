@@ -1,13 +1,12 @@
-import os
-import sys
+import time
 from utils.context import user_context
 from utils.extractors import (
     extract_phone_number,
     extract_fleet_number,
-    extract_transfer_details,
 )
-from utils.match import is_match, is_pattern, detect_language
 from lib.logger import Logger
+
+TIMEOUT_SECONDS = 60  # 1-minute timeout
 
 # Configure logging
 logger = Logger(name="otp_request_service").get_logger()
@@ -89,57 +88,64 @@ def handle_otp_request(bot_name, user_id, message, language):
 
 def handle_awaiting_otp_details(bot_name, user_id, message, language):
     """Handle processing when awaiting user details."""
-    # Check if we're in a state of awaiting both phone and fleet number
-    if user_context.get(user_id, {}).get("awaiting_fleet_and_phone"):
-        # First, try to extract fleet number
-        if not user_context[user_id].get("fleet_number"):
+    current_time = time.time()
+    user_state = user_context.get(user_id, {})
+
+    # Check if the request has timed out
+    request_start_time = user_state.get("request_start_time")
+    if request_start_time and (current_time - request_start_time > TIMEOUT_SECONDS):
+        # Clear the user context since the request expired
+        user_context[user_id] = {}
+        logger.debug(f"Request timed out for user {user_id}. Context cleared.")
+
+        return {bot_name: get_response_text(language, "request_timed_out")}
+
+    # If we're just now awaiting details, store the request start time
+    if (
+        "awaiting_fleet_and_phone" in user_state
+        and "request_start_time" not in user_state
+    ):
+        user_context[user_id]["request_start_time"] = current_time
+
+    awaiting_fleet_and_phone = user_state.get("awaiting_fleet_and_phone", False)
+    fleet_number = user_state.get("fleet_number")
+    phone_number = user_state.get("phone_number")
+
+    # If awaiting both details, attempt to extract both at once
+    if awaiting_fleet_and_phone:
+        if not fleet_number:
             fleet_number = extract_fleet_number(message)
             if fleet_number:
                 user_context[user_id]["fleet_number"] = fleet_number
-                logger.debug(f"Fleet number found in awaiting state: {fleet_number}")
+                logger.debug(f"Extracted fleet number: {fleet_number}")
 
-                # If we already have a phone number, proceed
-                if user_context[user_id].get("phone_number"):
-                    user_context[user_id].pop("awaiting_fleet_and_phone", None)
-                    bot_response = {
-                        bot_name: get_response_text(language, "processing_request")
-                    }
-                    logger.debug(
-                        f"Both phone and fleet number received. Bot Response: {bot_response}"
-                    )
-                    return bot_response
-
-                # Otherwise, continue awaiting phone number
-                bot_response = {
-                    bot_name: get_response_text(language, "awaiting_phone_number")
-                }
-                logger.debug(f"Awaiting Phone Number. Bot Response: {bot_response}")
-                return bot_response
-
-        # Then, try to extract phone number
-        if not user_context[user_id].get("phone_number"):
+        if not phone_number:
             phone_number = extract_phone_number(message)
             if phone_number:
                 user_context[user_id]["phone_number"] = phone_number
-                logger.debug(f"Phone number found in awaiting state: {phone_number}")
+                logger.debug(f"Extracted phone number: {phone_number}")
 
-                # If we already have a fleet number, proceed
-                if user_context[user_id].get("fleet_number"):
-                    user_context[user_id].pop("awaiting_fleet_and_phone", None)
-                    bot_response = {
-                        bot_name: get_response_text(language, "processing_request")
-                    }
-                    logger.debug(
-                        f"Both phone and fleet number received. Bot Response: {bot_response}"
-                    )
-                    return bot_response
+        # Check if we have both details now
+        if fleet_number and phone_number:
+            user_context[user_id].pop("awaiting_fleet_and_phone", None)
+            bot_response = {bot_name: get_response_text(language, "processing_request")}
+            logger.debug(f"Both details received. Bot Response: {bot_response}")
+            return bot_response
 
-                # Otherwise, continue awaiting fleet number
-                bot_response = {
-                    bot_name: get_response_text(language, "awaiting_fleet_number")
-                }
-                logger.debug(f"Awaiting Fleet Number. Bot Response: {bot_response}")
-                return bot_response
+        # If still missing details, prompt for the missing one
+        if not fleet_number:
+            bot_response = {
+                bot_name: get_response_text(language, "awaiting_fleet_number")
+            }
+            logger.debug("Awaiting Fleet Number.")
+            return bot_response
+
+        if not phone_number:
+            bot_response = {
+                bot_name: get_response_text(language, "awaiting_phone_number")
+            }
+            logger.debug("Awaiting Phone Number.")
+            return bot_response
 
     # If user needs to provide fleet number
     if user_context.get(user_id, {}).get("awaiting_fleet_number"):

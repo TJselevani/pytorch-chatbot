@@ -3,7 +3,7 @@ import re
 
 def extract_phone_number(message: str):
     """Extracts a 10-digit phone number from the message if present."""
-    match = re.search(r"(\+254\d{9}|\d{10}|0\d{9}|\d{12})", message)
+    match = re.search(r"(\+254\d{9}|\d{10}|0\d{9})", message)
     return match.group(1) if match else None
 
 
