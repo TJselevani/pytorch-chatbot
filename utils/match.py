@@ -1,4 +1,5 @@
 import re
+import logging
 from rapidfuzz import fuzz
 from langdetect import detect
 
@@ -12,11 +13,15 @@ def is_pattern(message, *words, threshold=80):
     :param threshold: Similarity threshold for fuzzy matching (default: 80)
     :return: True if words appear in order, else False
     """
+
     message = message.lower()
     pattern = r'\b' + r'\s+'.join(re.escape(word) for word in words) + r'\b'
+
+    logging.debug(f"Checking pattern: {pattern} in message: {message}")
     
     # Check for exact sequence
     if re.search(pattern, message):
+        logging.debug("Exact match found!")
         return True
 
     # Check for fuzzy match in order
@@ -29,8 +34,10 @@ def is_pattern(message, *words, threshold=80):
                 matched_indices.append(i)
                 break
 
-    return matched_indices == sorted(matched_indices) and len(matched_indices) == len(words)
+    result = matched_indices == sorted(matched_indices) and len(matched_indices) == len(words)
+    logging.debug(f"Matched indices: {matched_indices}, Result: {result}")
 
+    return result
 
 # Function to check if a word is in the message with typo tolerance
 def is_match(word, message, threshold=80):

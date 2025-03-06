@@ -4,9 +4,6 @@ from utils.context import user_context
 from utils.extractors import extract_fleet_number, extract_transfer_details
 from utils.match import is_match, detect_language
 
-# Add project root to sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 # Function to get the response in the detected language
 def get_response_text(language, key):
     responses = {

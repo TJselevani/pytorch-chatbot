@@ -11,10 +11,11 @@ from utils.handlers.passenger_request import handle_passenger_request
 from utils.match import detect_language
 from lib.logger import Logger
 
-logger = Logger(name="chatbot", create_separate_log=True)
+logger = Logger(name="chatbot").get_logger()
 
 # Add project root to sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 
 class ChatBot:
     def __init__(self, file_path, bot_name="Sam"):
@@ -34,10 +35,11 @@ class ChatBot:
         self.tags = data["tags"]
         self.model_state = data["model_state"]
 
-        self.model = NeuralNet(self.input_size, self.hidden_size, self.output_size).to(self.device)
+        self.model = NeuralNet(self.input_size, self.hidden_size, self.output_size).to(
+            self.device
+        )
         self.model.load_state_dict(self.model_state)
         self.model.eval()
-    
 
     def load_intents(self):
         """Fetch intents, patterns, and responses from MySQL database."""
@@ -46,18 +48,21 @@ class ChatBot:
         self.intents_data = {}
 
         for intent_id, tag in intents:
-            cursor.execute("SELECT pattern FROM patterns WHERE intent_id = %s", (intent_id,))
+            cursor.execute(
+                "SELECT pattern FROM patterns WHERE intent_id = %s", (intent_id,)
+            )
             patterns = [row[0] for row in cursor.fetchall()]
 
-            cursor.execute("SELECT response FROM responses WHERE intent_id = %s", (intent_id,))
+            cursor.execute(
+                "SELECT response FROM responses WHERE intent_id = %s", (intent_id,)
+            )
             responses = [row[0] for row in cursor.fetchall()]
 
             self.intents_data[tag] = {"patterns": patterns, "responses": responses}
-    
 
     def process_message(self, user_id, message):
         """Processes the user message and returns chatbot response."""
-         # Detect language of the message
+        # Detect language of the message
         language = detect_language(message)
 
         # If no special handling, proceed with intent classification
@@ -75,24 +80,34 @@ class ChatBot:
 
         if prob.item() > 0.75 and tag in self.intents_data:
             possible_responses = self.intents_data[tag]["responses"]
-            
+
             # Prioritize responses containing words from the user's input
             user_words = set(message.lower().split())
-            matched_responses = [resp for resp in possible_responses if any(word in resp.lower() for word in user_words)]
+            matched_responses = [
+                resp
+                for resp in possible_responses
+                if any(word in resp.lower() for word in user_words)
+            ]
 
             # If there are matched responses, choose one; otherwise, pick randomly
-            response = random.choice(matched_responses) if matched_responses else random.choice(possible_responses)
+            response = (
+                random.choice(matched_responses)
+                if matched_responses
+                else random.choice(possible_responses)
+            )
         else:
             # Provide both English and Swahili responses
             response_map = {
                 "en": "I do not understand. Could you please clarify?",
-                "sw": "Sielewi. Tafadhali fafanua."
+                "sw": "Sielewi. Tafadhali fafanua.",
             }
-            
-            response = response_map.get(language, response_map["en"]) 
+
+            response = response_map.get(language, response_map["en"])
 
         # First, check for OTP and transfer-related messages
-        special_response = handle_driver_request(self.bot_name, user_id, message, response)
+        special_response = handle_driver_request(
+            self.bot_name, user_id, message, response
+        )
         if special_response:
             return special_response
 
@@ -104,7 +119,6 @@ class ChatBot:
         # Third return the bot's message
         return {self.bot_name: response}
 
-        
     def chat_terminal(self):
         """Run chatbot in terminal mode."""
         print(f"{self.bot_name}: Hello! Type 'quit' to exit.")
