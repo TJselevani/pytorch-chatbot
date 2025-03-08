@@ -15,9 +15,9 @@ DB_INITIALIZED_FILE = os.path.join(DATA_DIR, "db_initialized.txt")
 # Database configuration
 DB_CONFIG = {
     "host": "localhost",
-    "user": "superuser",
-    "password": "developer",
-    "database": "temp_db"
+    "user": "root",
+    "password": "",
+    "database": "chat_db",
 }
 
 # Model configuration
@@ -25,5 +25,5 @@ MODEL_CONFIG = {
     "hidden_size": 8,
     "num_epochs": 1000,
     "batch_size": 8,
-    "learning_rate": 0.001
+    "learning_rate": 0.001,
 }

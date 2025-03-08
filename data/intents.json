@@ -2,71 +2,83 @@
   "intents": [
     {
       "tag": "greeting",
+      "category": "greeting",
       "patterns": [
         "Hi",
         "Hey",
         "How are you",
         "Is anyone there?",
         "Hello",
-        "Good day",
-        "Habari",
-        "Jambo",
-        "Mambo",
-        "Shikamoo"
+        "Good day"
       ],
       "responses": [
         "Hey :-)",
         "Hello, thanks for visiting",
         "Hi there, what can I do for you?",
         "Hi there, how can I help?",
-        "Good day to you too",
-        "Habari! Karibu.",
-        "Jambo! Nafurahi kukuona.",
-        "Mambo! Unahitaji msaada gani?",
-        "Shikamoo! Habari yako?"
-      ]
+        "Good day to you too"
+      ],
+      "context_set": "greeting_en"
     },
+
+    {
+      "tag": "greeting",
+      "category": "greeting",
+      "patterns": ["Habari", "Jambo", "hujambo", "niaje", "Mambo", "Shikamoo"],
+      "responses": [
+        "Habari yako! Karibu. Naweza kuhudumia kivipi?",
+        "Jambo! Nafurahi kukuona.Nikupe usaidizi gani",
+        "Mambo! Unahitaji msaada gani?",
+        "Shikamoo! Karibu sana, unahitaji usaidizi upi? "
+      ],
+      "context_set": "greeting_sw"
+    },
+
     {
       "tag": "goodbye",
-      "patterns": [
-        "Bye",
-        "See you later",
-        "Goodbye",
-        "Kwaheri",
-        "Tutaonana baadaye",
-        "Baadaye"
-      ],
+      "category": "goodbye",
+      "patterns": ["Bye", "See you later", "Goodbye"],
       "responses": [
         "See you later, thanks for visiting",
         "Have a nice day",
-        "Bye! Come back again soon.",
+        "Bye! Come back again soon."
+      ],
+      "context_set": "goodbye_en"
+    },
+
+    {
+      "tag": "goodbye",
+      "category": "goodbye",
+      "patterns": ["Kwaheri", "Tutaonana baadaye", "Baadaye"],
+      "responses": [
         "Kwaheri! Asante kwa kutembelea.",
         "Tutaonana baadaye!",
         "Baadaye! Karibu tena."
-      ]
+      ],
+      "context_set": "goodbye_sw"
     },
     {
       "tag": "thanks",
-      "patterns": [
-        "Thanks",
-        "Thank you",
-        "That's helpful",
-        "Thank's a lot!",
-        "Asante",
-        "Shukrani",
-        "Nashukuru"
-      ],
-      "responses": [
-        "Happy to help!",
-        "Any time!",
-        "My pleasure",
-        "Asante sana!",
-        "Karibu!",
-        "Nashukuru, uko huru kuuliza maswali mengine."
-      ]
+      "category": "small_talk",
+      "patterns": ["Thanks", "Thank you", "That's helpful", "Thank's a lot!"],
+      "responses": ["Happy to help!", "Any time!", "My pleasure"],
+      "context_set": "thanks_en"
     },
     {
+      "tag": "thanks",
+      "category": "small_talk",
+      "patterns": ["Asante", "Shukrani", "Nashukuru"],
+      "responses": [
+        "Asante sana!",
+        "Karibu tena!",
+        "Nashukuru pia, uko huru kuuliza maswali mengine."
+      ],
+      "context_set": "thanks_sw"
+    },
+
+    {
       "tag": "items",
+      "category": "products",
       "patterns": [
         "Which items do you have?",
         "What kinds of items are there?",
@@ -82,153 +94,310 @@
         "Tunatoa kahawa na chai"
       ]
     },
+
     {
       "tag": "payments",
+      "category": "payments",
       "patterns": [
         "Do you take credit cards?",
-        "Do you accept Mastercard?",
-        "Can I pay with Paypal?",
+        "Do you accept MPesa?",
+        "Can I pay with MPesa?",
+        "Can I pay using a USSD?",
+        "Can I pay using my phone?",
         "Are you cash only?",
+        "Do you accept cash payment?"
+      ],
+      "responses": ["We accept MPesa, USSD and Cash payments only"],
+      "context_set": "payments_en"
+    },
+
+    {
+      "tag": "payments",
+      "category": "payments",
+      "patterns": [
         "Mnatumia kadi za mkopo?",
-        "Mnakubali Mastercard?",
-        "Naweza kulipa kwa Paypal?",
+        "Mnakubali kulipa na MPesa?",
+        "Naweza kulipa kwa Mpesa?",
+        "Naweza kulipa kutumia simu?",
         "Mnakubali pesa taslimu tu?"
       ],
-      "responses": [
-        "We accept VISA, Mastercard and Paypal",
-        "We accept most major credit cards, and Paypal",
-        "Tunapokea VISA, Mastercard na Paypal",
-        "Tunapokea kadi kubwa za mkopo na Paypal"
-      ]
+      "responses": ["Tunapokea MPesa, USSD na hela za mkononi"],
+      "context_set": "payments_sw"
     },
     {
-      "tag": "delivery",
+      "tag": "traveling",
+      "category": "traveling",
       "patterns": [
-        "How long does delivery take?",
-        "How long does shipping take?",
-        "When do I get my delivery?",
-        "Usafirishaji unachukua muda gani?",
-        "Nitapokea mzigo wangu lini?",
-        "Muda wa kufikisha bidhaa ni upi?"
+        "How long does traveling take?",
+        "Usafirishaji unachukua muda gani?"
       ],
       "responses": [
-        "Delivery takes 2-4 days",
-        "Shipping takes 2-4 days",
-        "Usafirishaji unachukua siku 2-4",
-        "Utaipokea kati ya siku 2 hadi 4"
-      ]
+        "travelling takes 20 - 40 min depending on destination",
+        "Usafirishaji unachukua chini ya saa moja kulingana na"
+      ],
+      "context_set": "traveling_en"
     },
     {
       "tag": "funny",
+      "category": "jokes",
       "patterns": [
         "Tell me a joke!",
         "Tell me something funny!",
-        "Do you know a joke?",
-        "Niambie mzaha!",
-        "Unajua mzaha?",
-        "Nichekeshe kidogo!"
+        "Do you know a joke?"
       ],
       "responses": [
         "Why did the hipster burn his mouth? He drank the coffee before it was cool.",
         "What did the buffalo say when his son left for college? Bison.",
+        "A perfectionist walked into a bar...apparently, the bar wasn't set high enough",
+        "I ate a clock yesterday, it was very time-consuming",
+        "Never criticize someone until you've walked a mile in their shoes. That way, when you criticize them, they won't be able to hear you from that far away. Plus, you'll have their shoes.",
+        "The world tongue-twister champion just got arrested. I hear they're gonna give him a really tough sentence.",
+        "I own the world's worst thesaurus. Not only is it awful, it's awful.",
+        "What did the traffic light say to the car? \"Don't look now, I'm changing.\"",
+        "What do you call a snowman with a suntan? A puddle.",
+        "How does a penguin build a house? Igloos it together",
+        "I went to see the doctor about my short-term memory problems – the first thing he did was make me pay in advance",
+        "As I get older and I remember all the people I’ve lost along the way, I think to myself, maybe a career as a tour guide wasn’t for me.",
+        "o what if I don't know what 'Armageddon' means? It's not the end of the world."
+      ],
+      "context_set": "funny_en"
+    },
+
+    {
+      "tag": "funny",
+      "category": "jokes",
+      "patterns": ["Niambie mzaha!", "Unajua mzaha?", "Nichekeshe kidogo!"],
+      "responses": [
         "Kwa nini kuku alivuka barabara? Kwenda upande mwingine!",
         "Kwa nini nyani alicheka? Aliona ndugu yake kwenye kioo!"
-      ]
+      ],
+      "context_set": "funny_sw"
+    },
+
+    {
+      "tag": "datetime",
+      "category": "datetime",
+      "patterns": [
+        "What is the time",
+        "what is the date",
+        "date",
+        "time",
+        "tell me the date",
+        "day",
+        "what day is is today"
+      ],
+      "responses": ["Date and Time"],
+      "context_set": "datetime_en"
+    },
+
+    {
+      "tag": "whatsup",
+      "category": "small_talk",
+      "patterns": ["Whats up", "Wazzup", "How are you", "sup", "How you doing"],
+      "responses": ["All good..What about you?"],
+      "context_set": "whatsup_en"
     },
 
     {
       "tag": "otp_request",
+      "category": "otp",
       "patterns": [
         "Can you change my OTP for this phone number {phone_number}",
-        "Nibadilishie OTP kwa hii number {phone_number}"
+        "can I get an otp on this phone number",
+        "can I get my verification code",
+        "I've not received my otp",
+        "I've not gotten my code"
       ],
       "responses": [
-        "Alright, kindly help me with your fleet number.",
-        "Sawasawa, tafadhali nisaidie na nambari ya gari lako."
+        "Alright, kindly help me with your phone number and fleet number."
       ],
-      "context_set": "awaiting_fleet_number"
+      "context_set": "otp_request_en"
     },
+
     {
       "tag": "otp_request",
-      "patterns": ["Can I get an OTP on my line", "Sipati OTP kwa line yangu"],
-      "responses": [
-        "Alright, kindly help me with your fleet number.",
-        "Sawa, tafadhali nisaidie na nambari ya gari lako."
+      "category": "otp",
+      "patterns": [
+        "Nibadilishie OTP kwa hii number {phone_number}",
+        "sijapata otp kwa simu yangu",
+        "sijapata any code kwa simu"
       ],
-      "context_set": "awaiting_fleet_number"
-    },
-    {
-      "tag": "otp_with_fleet",
-      "patterns": ["{fleet_number}"],
       "responses": [
-        "Kindly wait as your request is being processed.",
-        "Tafadhali subiri ombi lako linashughulikiwa."
+        "Sawasawa, tafadhali nisaidie na nambari ya simu na nambari ya gari lako."
       ],
-      "context_filter": "awaiting_fleet_number"
+      "context_set": "otp_request_sw"
     },
+
     {
-      "tag": "transfer_cash",
+      "tag": "transfer_request",
+      "category": "account",
       "patterns": [
         "Transfer for me ksh {amount} from {source_fleet} to {destination_fleet}",
-        "Nataka kutuma ksh {amount} from {source_fleet} to {destination_fleet}"
+        "I want to transfer ksh {amount} from {source_fleet} to {destination_fleet}",
+        "transfer {amount} from {source_fleet} to {destination_fleet}",
+        "transfer {amount} {source_fleet} {destination_fleet}"
       ],
       "responses": [
-        "Okay, Kindly wait as your request is being processed.",
-        "Tafadhali subiri ombi lako linashughulikiwa."
-      ]
+        "Okay, Kindly wait as your cash transfer request is being processed."
+      ],
+      "context_set": "transfer_request_en"
+    },
+
+    {
+      "tag": "transfer_request",
+      "category": "account",
+      "patterns": [
+        "Nataka kutuma ksh {amount} from {source_fleet} to {destination_fleet}",
+        "Nataka kutuma {amount} from {source_fleet} to {destination_fleet}",
+        "Nataka kutuma {amount} toka {source_fleet} hadi {destination_fleet}",
+        "Naeza tuma ksh {amount} from {source_fleet} to {destination_fleet}",
+        "kutuma {amount} from {source_fleet} to {destination_fleet}",
+        "tuma {amount} {source_fleet} {destination_fleet}"
+      ],
+      "responses": [
+        "Tafadhali subiri ombi lako la kutuma hela linashughulikiwa."
+      ],
+      "context_set": "transfer_request_sw"
     },
 
     {
       "tag": "booking_details_request",
+      "category": "booking",
       "patterns": [
+        "Can i book a matatu?",
         "How do I book a vehicle?",
-        "Naeza book aje gari?",
-        "Help me book a vehicle from point A to B.",
-        "Naeza book gari kutoka mahali hapa hadi pale?"
+        "I want to book a car?",
+        "I want to book a matatu?",
+        "Help me book a vehicle from {point A} to {B}.",
+        "Help me book a matatu from {point A} to {B}."
       ],
       "responses": [
         "You can book a vehicle by sending a message with the word 'reserve' or 'save' followed by details of your trip: Reserve from <Location A> to <Location B>.",
-
-        "Ili kuweka nafasi ya gari, tafadhali toa maelezo ya mahali ulipo na unakoelekea: Nafasi kutoka <Eneo A> hadi <Eneo B>."
+        "You can book a matatu by sending a message with the word 'reserve' or 'save' followed by details of your trip: Reserve from <Location A> to <Location B>."
       ],
-      "context_set": "awaiting_booking_details"
+      "context_set": "booking_details_request_en"
     },
 
     {
-      "tag": "fleet_number_correction",
+      "tag": "booking_details_request",
+      "category": "booking",
+      "patterns": [
+        "Naeza book aje gari?",
+        "Naweza book aje matatu?",
+        "Naeza book gari kutoka mahali {hapa} hadi {pale}?"
+      ],
+      "responses": [
+        "Ili kuweka nafasi ya gari, tafadhali toa maelezo ya mahali ulipo na unakoelekea: Nafasi kutoka <Eneo A> hadi <Eneo B>."
+      ],
+      "context_set": "booking_details_request_sw"
+    },
+
+    {
+      "tag": "payment_correction_request",
+      "category": "payments",
       "patterns": [
         "I paid to the wrong fleet number, how do I transfer it to the correct one?",
-        "Nimelipa kwa nambari mbaya ya gari, naweza aje kuhamisha?",
         "I sent money to the wrong fleet number, what should I do?",
-        "Nimelipa kwa gari isiyo sahihi, naweza kupataje pesa zangu?",
         "How do I correct a wrong fleet number payment?",
+        "I made the wrong payment"
+      ],
+      "responses": [
+        "Please share your fleet number details in this format: Recover <amount> from <se00> to <se01>, and we will process your request.",
+        "Kindly provide the incorrect fleet number and the correct one, and we will assist with the transfer: Recover <amount> from <se00> to <se01>"
+      ],
+      "context_set": "payment_correction_request_en"
+    },
+
+    {
+      "tag": "payment_correction_request",
+      "category": "payments",
+      "patterns": [
+        "nimelipa gari vibaya",
+        "nimelipa vibaya",
+        "Nimelipa kwa nambari mbaya ya gari, naweza aje kuhamisha?",
+        "Nimelipa kwa gari isiyo sahihi, naweza kupataje pesa zangu?",
         "Naeza aje kurekebisha malipo kwa nambari mbaya ya gari?"
       ],
       "responses": [
-        "Please share your fleet number details in this format: Transfer <amount> from <se00> to <se01>, and we will process your request.",
-        "Kindly provide the incorrect fleet number and the correct one, and we will assist with the transfer. Transfer <amount> from <se00> to <se01>",
-        "Tafadhali shiriki nambari yako ya gari kwa fomati hii: Transfer kutoka <se00> hadi <se01>, kisha tutashughulikia ombi lako."
+        "Tafadhali shiriki nambari yako ya gari kwa fomati hii: Recover kutoka <se00> hadi <se01>, kisha tutashughulikia ombi lako."
       ],
-      "context_set": "awaiting_fleet_number"
+      "context_set": "payment_correction_request_sw"
     },
 
     {
-      "tag": "wallet_management",
+      "tag": "wallet_load_request",
+      "category": "wallet",
       "patterns": [
         "How do I load my wallet?",
+        "How can I add money to my wallet?"
+      ],
+      "responses": [
+        "To load your wallet, use the USSD code *123# and follow the instructions, or send a message with 'LOAD <account_number>' to add funds."
+      ],
+      "context_set": "wallet_load_request_en"
+    },
+
+    {
+      "tag": "wallet_load_request",
+      "category": "wallet",
+      "patterns": [
         "Naeza aje kuweka pesa kwenye pochi yangu?",
-        "How can I add money to my wallet?",
+        "nataka kuongeza pesa kwa pochi yangu",
+        "naeza ongeza pesa aje kwa pochi?"
+      ],
+      "responses": [
+        "Ili kuweka pesa kwenye pochi yako, tumia USSD *112233# na ufuate maelekezo, au tuma ujumbe wenye 'LOAD <nambari_ya_akaunti>' kuongeza pesa."
+      ],
+      "context_set": "wallet_load_request_sw"
+    },
+
+    {
+      "tag": "wallet_pay_request",
+      "category": "wallet",
+      "patterns": [
         "How do I pay from my wallet?",
-        "Naeza aje kulipa kutoka kwenye pochi yangu?",
         "How can I make a payment using my wallet?"
       ],
       "responses": [
-        "To load your wallet, use the USSD code *123# and follow the instructions, or send a message with 'LOAD <account_number>' to add funds.",
-        "To pay from your wallet, send 'PAY <amount> <account_number> <fleet_number>' via message, or use *123# to complete the payment.",
-        "Ili kuweka pesa kwenye pochi yako, tumia USSD *123# na ufuate maelekezo, au tuma ujumbe wenye 'LOAD <nambari_ya_akaunti>' kuongeza pesa.",
-        "Ili kulipa kutoka kwa pochi yako, tuma 'PAY <malipo> <nambari_ya_akaunti> <nambari_ya_gari>' kwa ujumbe, au tumia *123# kukamilisha malipo."
+        "To pay from your wallet, send 'PAY <amount> <account_number> <fleet_number>', or use *123# to complete the payment."
       ],
-      "context_set": ""
+      "context_set": "wallet_pay_request_en"
+    },
+
+    {
+      "tag": "wallet_pay_request",
+      "category": "wallet",
+      "patterns": [
+        "Naeza aje kulipa kutoka kwenye pochi yangu?",
+        "nalipa aje kutumia pochi"
+      ],
+      "responses": [
+        "Ili kulipa kutoka kwa pochi yako, tuma 'PAY <malipo> <nambari_ya_akaunti> <nambari_ya_gari>' kwa ujumbe, au tumia *112233# kukamilisha malipo."
+      ],
+      "context_set": "wallet_pay_request_sw"
+    },
+
+    {
+      "tag": "weather",
+      "category": "weather",
+      "patterns": [
+        "What is the weather like?",
+        "Tell me today's weather",
+        "How's the weather?"
+      ],
+      "responses": ["(DYNAMIC)"]
+    },
+
+    {
+      "tag": "noanswer",
+      "category": "small_talk",
+      "patterns": [],
+      "responses": [
+        "Sorry, can't understand you",
+        "Please give me more info",
+        "Not sure I understand"
+      ],
+      "context": "noanswer_en"
     }
   ]
 }

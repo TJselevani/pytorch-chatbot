@@ -10,6 +10,7 @@ from utils.handlers.driver_request import handle_driver_request
 from utils.handlers.passenger_request import handle_passenger_request
 from utils.match import detect_language
 from lib.logger import Logger
+from utils.actions import get_weather
 
 logger = Logger(name="chatbot").get_logger()
 
@@ -61,13 +62,18 @@ class ChatBot:
             self.intents_data[tag] = {"patterns": patterns, "responses": responses}
 
     def process_message(self, user_id, message):
+        # Define a function mapping for dynamic responses
+        ACTION_MAPPING = {
+            "weather": get_weather,  # Link "weather" intent to `get_weather()` function
+        }
+
         """Processes the user message and returns chatbot response."""
         # Detect language of the message
         language = detect_language(message)
 
-        # If no special handling, proceed with intent classification
-        sentence = tokenize(message)
-        X = bag_of_words(sentence, self.all_words)
+        # Preprocess input sentence
+        sentence = tokenize(message)  # Tokenization
+        X = bag_of_words(sentence, self.all_words)  # Use improved BoW
         X = X.reshape(1, X.shape[0])
         X = torch.from_numpy(X).to(self.device)
 
@@ -78,8 +84,9 @@ class ChatBot:
         probs = torch.softmax(output, dim=1)
         prob = probs[0][predicted.item()]
 
-        if prob.item() > 0.75 and tag in self.intents_data:
-            possible_responses = self.intents_data[tag]["responses"]
+        if prob.item() > 0.8 and tag in self.intents_data:
+            intent_data = self.intents_data[tag]
+            possible_responses = intent_data["responses"]
 
             # Prioritize responses containing words from the user's input
             user_words = set(message.lower().split())
@@ -89,36 +96,37 @@ class ChatBot:
                 if any(word in resp.lower() for word in user_words)
             ]
 
-            # If there are matched responses, choose one; otherwise, pick randomly
+            # If matched responses exist, pick one; otherwise, choose randomly
             response = (
                 random.choice(matched_responses)
                 if matched_responses
                 else random.choice(possible_responses)
             )
         else:
-            # Provide both English and Swahili responses
+            # Default fallback response
             response_map = {
                 "en": "I do not understand. Could you please clarify?",
                 "sw": "Sielewi. Tafadhali fafanua.",
             }
-
             response = response_map.get(language, response_map["en"])
 
-        # First, check for OTP and transfer-related messages
+        # Check for special requests
+        # Check if the intent has a function mapped to it
+        if tag in ACTION_MAPPING:
+            return ACTION_MAPPING[tag]()  # Execute function dynamically
+
         special_response = handle_driver_request(
             self.bot_name, user_id, message, response
         )
         if special_response:
             return special_response
 
-        # Second, check for OTP and transfer-related messages
         special_response = handle_passenger_request(
             self.bot_name, user_id, message, response
         )
         if special_response:
             return special_response
 
-        # Third return the bot's message
         return {self.bot_name: response}
 
     def chat_terminal(self):

@@ -1,8 +1,19 @@
 import numpy as np
 import nltk
-nltk.download('punkt')
+import string
 from nltk.stem.porter import PorterStemmer
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+
+
+# nltk.download("punkt")
+# nltk.download("wordnet")
+# nltk.download("stopwords")
+
 stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words("english", "swahili"))
+
 
 def tokenize(sentence):
     """
@@ -37,7 +48,27 @@ def bag_of_words(tokenized_sentence, words):
     # initialize bag with 0 for each word
     bag = np.zeros(len(words), dtype=np.float32)
     for idx, w in enumerate(words):
-        if w in sentence_words: 
+        if w in sentence_words:
             bag[idx] = 1
 
     return bag
+
+
+def preprocess_text(sentence):
+    """Ensuring that words are reduced to their base form to improve model generalization."""
+    """Removing unnecessary words that do not contribute to intent detection."""
+    tokens = nltk.word_tokenize(sentence)  # Tokenization
+    tokens = [
+        lemmatizer.lemmatize(word.lower())
+        for word in tokens
+        if word not in string.punctuation
+    ]  # Lemmatization
+    tokens = [word for word in tokens if word not in stop_words]  # Stopword Removal
+    return tokens
+
+
+def create_bow(sentence, words):
+    """Modifies to you create the Bag-of-Words representation:"""
+    sentence_words = preprocess_text(sentence)
+    bag = [1 if w in sentence_words else 0 for w in words]
+    return np.array(bag)

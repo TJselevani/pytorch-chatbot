@@ -4,11 +4,16 @@ import sys
 import signal
 from config import DB_INITIALIZED_FILE, TRAINING_DATA_FILE
 
+# Add project root to sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__))))
+
+
 def signal_handler(sig, frame):
     """Handler for SIGINT signal."""
     print("\n🔴 Received SIGINT, terminating processes...")
     # Terminate any running subprocesses here if needed
     sys.exit(0)
+
 
 def main():
     """
@@ -41,7 +46,17 @@ def main():
         # Step 4: Run the app
         print("🔹 Running the app...")
         # Use subprocess.Popen instead of subprocess.run for more control
-        app_process = subprocess.Popen(["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"])
+        app_process = subprocess.Popen(
+            [
+                "uvicorn",
+                "app.main:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8000",
+                "--reload",
+            ]
+        )
 
         # Wait for the app process to finish
         try:
@@ -53,6 +68,7 @@ def main():
 
     except subprocess.CalledProcessError as e:
         print(f"Error running script: {e}")
+
 
 if __name__ == "__main__":
     main()

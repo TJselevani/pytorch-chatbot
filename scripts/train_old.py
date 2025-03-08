@@ -3,35 +3,28 @@ import sys
 import numpy as np
 import torch
 import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader
+
+# Import from relative paths based on the new structure
+from utils.nltk_utils import bag_of_words, tokenize, stem
+from models.neural_net import NeuralNet
+from database.db_connection import conn, cursor
+from config import TRAINING_DATA_FILE
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from torch.utils.data import Dataset, DataLoader
-from utils.nltk_utils import create_bow, preprocess_text
-from models.neural_net import NeuralNet
-from database.db_connection import conn, cursor
-from config import TRAINING_DATA_FILE, MODEL_CONFIG
-
 
 def train():
     # Fetch intents and their patterns
-    cursor.execute("SELECT id, tag, category, context FROM intents")
+    cursor.execute("SELECT id, tag FROM intents")
     intents = cursor.fetchall()
 
     all_words = []
     tags = []
-    categories = []
-    contexts = []
     xy = []
 
-    for intent_id, tag, category, context in intents:
-        if category not in categories:
-            categories.append(category)
-
-        if context not in contexts:
-            contexts.append(context)
-
+    for intent_id, tag in intents:
         tags.append(tag)
 
         # Fetch patterns for the current intent
@@ -41,57 +34,43 @@ def train():
         patterns = [row[0] for row in cursor.fetchall()]
 
         for pattern in patterns:
-            word = preprocess_text(pattern)  # Updated preprocessing method
-            all_words.extend(word)
-            xy.append((word, tag, category, context))
+            w = tokenize(pattern)
+            all_words.extend(w)
+            xy.append((w, tag))
 
     # Close database connection
     conn.close()
 
-    # Sort and remove duplicates
+    # Stem and preprocess words
+    ignore_words = ["?", ".", "!"]
+    all_words = [stem(w) for w in all_words if w not in ignore_words]
     all_words = sorted(set(all_words))
     tags = sorted(set(tags))
-    categories = sorted(set(categories))
-    contexts = sorted(set(contexts))
 
     print(len(xy), "patterns")
     print(len(tags), "tags:", tags)
-    print(f"{len(categories)} categories: {categories}")
-    print(f"{len(contexts)} Contexts: {contexts}")
-    print(len(all_words), "unique processed words:", all_words)
+    print(len(all_words), "unique stemmed words:", all_words)
 
-    # Create training data
+    # create training data
     X_train = []
     y_train = []
-    category_labels = []
-    context_labels = []
-
-    for pattern_sentence, tag, category, context in xy:
-        # X: Bag-of-Words for each pattern_sentence
-        bow = create_bow(pattern_sentence, all_words)  # Uses new BOW method
-        X_train.append(bow)
-
+    for pattern_sentence, tag in xy:
+        # X: bag of words for each pattern_sentence
+        bag = bag_of_words(pattern_sentence, all_words)
+        X_train.append(bag)
         # y: PyTorch CrossEntropyLoss needs only class labels, not one-hot
         label = tags.index(tag)
         y_train.append(label)
 
-        # Assign category labels
-        category_labels.append(categories.index(category))
-
-        # Assign context labels
-        context_labels.append(contexts.index(context))
-
     X_train = np.array(X_train)
     y_train = np.array(y_train)
-    category_labels = np.array(category_labels)
-    context_labels = np.array(context_labels)
 
-    # Hyperparameters
-    num_epochs = MODEL_CONFIG["num_epochs"]
-    batch_size = MODEL_CONFIG["batch_size"]
-    learning_rate = MODEL_CONFIG["learning_rate"]
+    # Hyper-parameters
+    num_epochs = 1000
+    batch_size = 8
+    learning_rate = 0.001
     input_size = len(X_train[0])
-    hidden_size = MODEL_CONFIG["hidden_size"]
+    hidden_size = 8
     output_size = len(tags)
     print(input_size, output_size)
 
@@ -101,9 +80,11 @@ def train():
             self.x_data = X_train
             self.y_data = y_train
 
+        # support indexing such that dataset[i] can be used to get i-th sample
         def __getitem__(self, index):
             return self.x_data[index], self.y_data[index]
 
+        # we can call len(dataset) to return the size
         def __len__(self):
             return self.n_samples
 
@@ -128,6 +109,8 @@ def train():
 
             # Forward pass
             outputs = model(words)
+            # if y would be one-hot, we must apply
+            # labels = torch.max(labels, 1)[1]
             loss = criterion(outputs, labels)
 
             # Backward and optimize
@@ -138,7 +121,7 @@ def train():
         if (epoch + 1) % 100 == 0:
             print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}")
 
-    print(f"Final loss: {loss.item():.4f}")
+    print(f"final loss: {loss.item():.4f}")
 
     data = {
         "model_state": model.state_dict(),
@@ -147,8 +130,6 @@ def train():
         "output_size": output_size,
         "all_words": all_words,
         "tags": tags,
-        "categories": categories,
-        "contexts": contexts,
     }
 
     # Save model to the path defined in config
