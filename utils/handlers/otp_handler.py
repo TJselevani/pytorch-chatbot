@@ -5,11 +5,18 @@ from utils.extractors import (
     extract_fleet_number,
 )
 from lib.logger import Logger
+from utils.services.account_service import AccountService
 
-TIMEOUT_SECONDS = 60  # 1-minute timeout
+TIMEOUT_SECONDS = 180  # 1-minute timeout
 
 # Configure logging
 logger = Logger(name="otp_handler", separate_file=True).get_logger()
+
+# Initialize AccountService with API details
+SMS_API_KEY = "YOUR_SMS_API_KEY"
+SMS_BASE_URL = "https://www.w3schools.com/python/demopage.php"  # "YOUR_SMS_API_URL"
+SENDER_ID = "YOUR_SENDER_ID"
+account_service = AccountService(SMS_API_KEY, SMS_BASE_URL, SENDER_ID)
 
 
 # Function to get the response in the detected language
@@ -19,9 +26,17 @@ def get_response_text(language, key):
             "en": "Okay, kindly help me with your fleet number.",
             "sw": "Sawa, tafadhali nisaidie na nambari ya gari lako.",
         },
+        "invalid_fleet_number": {
+            "en": "Please provide a valid fleet number.",
+            "sw": "Tafadhali nisaidie nambari sahihi ya gari lako.",
+        },
         "awaiting_phone_number": {
             "en": "Kindly provide your phone number.",
             "sw": "Tafadhali toa nambari yako ya simu.",
+        },
+        "invalid_phone_number": {
+            "en": "Please provide a valid phone number.",
+            "sw": "Tafadhali toa nambari sahihi ya simu.",
         },
         "awaiting_both": {
             "en": "Please provide both your phone number and fleet number.",
@@ -31,13 +46,13 @@ def get_response_text(language, key):
             "en": "Kindly wait as your request is being processed.",
             "sw": "Tafadhali subiri ombi lako linashughulikiwa.",
         },
-        "invalid_fleet_number": {
-            "en": "Please provide a valid fleet number.",
-            "sw": "Tafadhali nisaidie nambari sahihi ya gari lako.",
+        "otp_sent_success": {
+            "en": "An OTP has been sent to your phone number. Please enter it to proceed.",
+            "sw": "OTP imetumwa kwa nambari yako ya simu. Tafadhali ingiza ili kuendelea.",
         },
-        "invalid_phone_number": {
-            "en": "Please provide a valid phone number.",
-            "sw": "Tafadhali toa nambari sahihi ya simu.",
+        "otp_failed": {
+            "en": "Failed to send OTP. Please try again later.",
+            "sw": "Imeshindikana kutuma OTP. Tafadhali jaribu tena baadaye.",
         },
         "default": {
             "en": "I'm sorry, I didn't understand that.",
@@ -71,10 +86,17 @@ def handle_get_otp_request(bot_name, user_id, message, language):
     fleet_number = user_context.get(user_id, {}).get("fleet_number")
 
     if phone_number and fleet_number:
-        logger.info(
-            f"Processing OTP request with Phone number: {phone_number}, Fleet number: {fleet_number}"
-        )
-        bot_response = {bot_name: get_response_text(language, "processing_request")}
+        user_context[user_id]["awaiting_otp_verification"] = True
+        logger.info(f"Sending OTP to {phone_number} for Fleet {fleet_number}")
+        otp_response = account_service.send_otp(phone_number)
+
+        if otp_response.get("status") == "success":
+            bot_response = {bot_name: get_response_text(language, "otp_sent_success")}
+            logger.info("OTP sent successfully.")
+        else:
+            bot_response = {bot_name: get_response_text(language, "otp_failed")}
+            logger.error(f"Failed to send OTP: {otp_response.get('details', '')}")
+
         logger.debug(f"Bot Response: {bot_response}")
         return bot_response
     else:
@@ -95,10 +117,8 @@ def handle_awaiting_otp_details(bot_name, user_id, message, language):
     request_start_time = user_state.get("request_start_time")
     if request_start_time and (current_time - request_start_time > TIMEOUT_SECONDS):
         # Clear the user context since the request expired
-        user_context[user_id] = {}
+        user_context.pop(user_id, None)
         logger.debug(f"Request timed out for user {user_id}. Context cleared.")
-        # Clear the awaiting state
-        user_context[user_id].pop("awaiting_otp_request", None)
         return {bot_name: get_response_text(language, "request_timed_out")}
 
     # If we're just now awaiting details, store the request start time
@@ -133,6 +153,19 @@ def handle_awaiting_otp_details(bot_name, user_id, message, language):
             # Clear the awaiting state once OTP is processed
             user_context[user_id].pop("awaiting_otp_request", None)
             logger.info(f"Both details received. Bot Response: {bot_response}")
+
+            user_context[user_id]["awaiting_otp_verification"] = True
+            logger.info(f"Sending OTP to {phone_number} for Fleet {fleet_number}")
+            otp_response = account_service.send_otp(phone_number)
+
+            if otp_response.get("status") == "success":
+                bot_response = {
+                    bot_name: get_response_text(language, "otp_sent_success")
+                }
+                logger.info("OTP sent successfully.")
+            else:
+                bot_response = {bot_name: get_response_text(language, "otp_failed")}
+                logger.error(f"Failed to send OTP: {otp_response.get('details', '')}")
             return bot_response
 
         # If still missing details, prompt for the missing one
@@ -166,6 +199,19 @@ def handle_awaiting_otp_details(bot_name, user_id, message, language):
             # Clear the awaiting state once OTP is processed
             user_context[user_id].pop("awaiting_otp_request", None)
             bot_response = {bot_name: get_response_text(language, "processing_request")}
+
+            user_context[user_id]["awaiting_otp_verification"] = True
+            logger.info(f"Sending OTP to {phone_number} for Fleet {fleet_number}")
+            otp_response = account_service.send_otp(phone_number)
+
+            if otp_response.get("status") == "success":
+                bot_response = {
+                    bot_name: get_response_text(language, "otp_sent_success")
+                }
+                logger.info("OTP sent successfully.")
+            else:
+                bot_response = {bot_name: get_response_text(language, "otp_failed")}
+                logger.error(f"Failed to send OTP: {otp_response.get('details', '')}")
             logger.debug(f"Bot Response: {bot_response}")
             return bot_response
         else:
@@ -191,6 +237,19 @@ def handle_awaiting_otp_details(bot_name, user_id, message, language):
             # Clear the awaiting state once OTP is processed
             user_context[user_id].pop("awaiting_otp_request", None)
             bot_response = {bot_name: get_response_text(language, "processing_request")}
+
+            user_context[user_id]["awaiting_otp_verification"] = True
+            logger.info(f"Sending OTP to {phone_number} for Fleet {fleet_number}")
+            otp_response = account_service.send_otp(phone_number)
+
+            if otp_response.get("status") == "success":
+                bot_response = {
+                    bot_name: get_response_text(language, "otp_sent_success")
+                }
+                logger.info("OTP sent successfully.")
+            else:
+                bot_response = {bot_name: get_response_text(language, "otp_failed")}
+                logger.error(f"Failed to send OTP: {otp_response.get('details', '')}")
             logger.debug(f"Bot Response: {bot_response}")
             return bot_response
         else:
@@ -199,5 +258,29 @@ def handle_awaiting_otp_details(bot_name, user_id, message, language):
             }
             logger.debug(f"Bot Response: {bot_response}")
             return bot_response
+
+    return None
+
+
+def handle_verify_otp(bot_name, user_id, message, language):
+    """Handles OTP verification after the user enters the received OTP."""
+    phone_number = user_context.get(user_id, {}).get("phone_number")
+
+    if not phone_number:
+        logger.error(f"No phone number found for user {user_id}")
+        user_context.pop(user_id, None)  # Clear stored context
+        return {bot_name: "Your OTP session has expired. Please request a new OTP."}
+
+    user_otp = message.strip()
+
+    otp_response = account_service.verify_otp(phone_number, user_otp)
+
+    if otp_response["status"] == "success":
+        logger.info(f"User {user_id} successfully verified OTP.")
+        user_context.pop(user_id, None)  # Clear stored context after success
+        return {bot_name: otp_response["message"]}
+    else:
+        logger.warning(f"User {user_id} entered an incorrect or expired OTP.")
+        return {bot_name: otp_response["message"]}
 
     return None

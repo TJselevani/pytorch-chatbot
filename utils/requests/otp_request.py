@@ -1,6 +1,7 @@
 from utils.context import user_context
 from utils.handlers.otp_handler import (
     handle_awaiting_otp_details,
+    handle_verify_otp,
     handle_get_otp_request,
 )
 from utils.match import is_match, detect_language
@@ -27,6 +28,12 @@ def get_otp(bot_name, user_id, message):
             logger.debug(f"Handled awaiting OTP details: {otp_response}")
             return otp_response
 
+    if user_context[user_id].get("awaiting_otp_verification"):
+        otp_response = handle_verify_otp(bot_name, user_id, message, language)
+        if otp_response:
+            logger.debug(f"Handled awaiting OTP details: {otp_response}")
+            return otp_response
+
     # {1} Check if user is requesting OTP
     otp_keywords = ["otp", "code"]
     if any(is_match(word, message) for word in otp_keywords):
@@ -37,15 +44,6 @@ def get_otp(bot_name, user_id, message):
 
         # Trigger OTP request function
         return handle_get_otp_request(bot_name, user_id, message, language)
-
-    # For non-specific interactions after successful processing, reset awaiting flags
-    if user_context.get(user_id, {}).get("phone_number") and user_context.get(
-        user_id, {}
-    ).get("fleet_number"):
-        # Clear any awaiting flags if both phone and fleet numbers are present
-        user_context[user_id].pop("awaiting_phone_number", None)
-        user_context[user_id].pop("awaiting_fleet_number", None)
-        user_context[user_id].pop("awaiting_fleet_and_phone", None)
 
     logger.debug("No special handling needed")
     return None  # No special handling needed

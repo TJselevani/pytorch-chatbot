@@ -14,10 +14,10 @@ def create_tables():
     """
 
     # Drop database if it exists
-    cursor.execute(f"DROP DATABASE IF EXISTS {DB_CONFIG['database']}")
+    # cursor.execute(f"DROP DATABASE IF EXISTS {DB_CONFIG['database']}")
 
     # Create a fresh database
-    cursor.execute(f"CREATE DATABASE {DB_CONFIG['database']}")
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_CONFIG['database']}")
     cursor.execute(f"USE {DB_CONFIG['database']}")
 
     # Create a table for intents

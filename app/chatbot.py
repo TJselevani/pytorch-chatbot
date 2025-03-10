@@ -72,6 +72,7 @@ class ChatBot:
             "weather": lambda: get_weather(),
             "otp_request_en": lambda: get_otp(self.bot_name, user_id, message),
             "otp_request_sw": lambda: get_otp(self.bot_name, user_id, message),
+            "otp_verification": lambda: get_otp(self.bot_name, user_id, message),
             "transfer_request_en": lambda: transfer_payment(
                 self.bot_name, user_id, message
             ),
