@@ -1,21 +1,20 @@
-import os
-import sys
 import random
 import torch
 
 from utils.nltk_utils import bag_of_words, tokenize
 from database.db_connection import cursor
 from models.neural_net import NeuralNet
-from utils.handlers.driver_request import handle_driver_request
-from utils.handlers.passenger_request import handle_passenger_request
-from utils.match import detect_language
 from lib.logger import Logger
+from utils.context import user_context
+from utils.match import detect_language, normalize_tag
 from utils.actions import get_weather
+from utils.requests.booking_request import get_booking
+from utils.requests.otp_request import get_otp
+from utils.requests.recover_request import recover_payment
+from utils.requests.transfer_request import transfer_payment
+
 
 logger = Logger(name="chatbot").get_logger()
-
-# Add project root to sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
 class ChatBot:
@@ -62,12 +61,108 @@ class ChatBot:
             self.intents_data[tag] = {"patterns": patterns, "responses": responses}
 
     def process_message(self, user_id, message):
-        # Define a function mapping for dynamic responses
+        """Processes user messages, handles follow-ups, and returns chatbot response."""
+
+        # Ensure user context entry exists
+        if user_id not in user_context:
+            user_context[user_id] = {}  # Initialize user context if missing
+
+        # Define action mapping for intent-specific responses
         ACTION_MAPPING = {
-            "weather": get_weather,  # Link "weather" intent to `get_weather()` function
+            "weather": lambda: get_weather(),
+            "otp_request_en": lambda: get_otp(self.bot_name, user_id, message),
+            "otp_request_sw": lambda: get_otp(self.bot_name, user_id, message),
+            "transfer_request_en": lambda: transfer_payment(
+                self.bot_name, user_id, message
+            ),
+            "transfer_request_sw": lambda: transfer_payment(
+                self.bot_name, user_id, message
+            ),
+            "recover_request_en": lambda: recover_payment(
+                self.bot_name, user_id, message
+            ),
+            "recover_request_sw": lambda: recover_payment(
+                self.bot_name, user_id, message
+            ),
+            "booking_request_en": lambda: get_booking(self.bot_name, user_id, message),
+            "booking_request_sw": lambda: get_booking(self.bot_name, user_id, message),
         }
 
+        # Normalize all keys in ACTION_MAPPING to ensure consistency
+        normalized_mapping = {normalize_tag(k): v for k, v in ACTION_MAPPING.items()}
+
+        # Check if the user has an ongoing context requiring a follow-up
+        if user_id in user_context and user_context[user_id]:
+            for tag, action in normalized_mapping.items():  # Use normalized keys
+                if user_context[user_id].get(f"awaiting_{tag}"):
+                    response = action()  # Call the corresponding function
+                    if response:
+                        # Clear follow-up flag
+                        # user_context[user_id].pop(f"awaiting_{tag}", None)
+                        return {self.bot_name: response}
+
+        # Intent detection (normal chatbot processing)
+        sentence = tokenize(message)
+        X = bag_of_words(sentence, self.all_words)
+        X = X.reshape(1, X.shape[0])
+        X = torch.from_numpy(X).to(self.device)
+
+        output = self.model(X)
+        _, predicted = torch.max(output, dim=1)
+        tag = self.tags[predicted.item()]
+
+        # Normalize detected tag to match our updated mapping
+        normalized_tag = normalize_tag(tag)
+
+        probs = torch.softmax(output, dim=1)
+        prob = probs[0][predicted.item()]
+
+        if prob.item() > 0.8 and tag in self.intents_data:
+            intent_data = self.intents_data[tag]
+            possible_responses = intent_data["responses"]
+            response = random.choice(possible_responses)
+        else:
+            # Default fallback response
+            language = detect_language(message)
+            response_map = {
+                "en": "I do not understand. Could you please clarify?",
+                "sw": "Sielewi. Tafadhali fafanua.",
+            }
+            response = response_map.get(language, response_map["en"])
+
+        # If an intent matches a mapped function, execute it
+        if normalized_tag in normalized_mapping:
+            # Set follow-up state using normalized key
+            user_context[user_id][f"awaiting_{normalized_tag}"] = True
+            return normalized_mapping[
+                normalized_tag
+            ]()  # Call the corresponding function
+
+        return {self.bot_name: response}
+
+    def process_prompt(self, user_id, message):
         """Processes the user message and returns chatbot response."""
+        # Define a function mapping for dynamic responses
+
+        # Check if user has an ongoing session (e.g., awaiting OTP)
+
+        if user_id in user_context and user_context[user_id]:
+            # Call `get_otp` directly to handle follow-up response
+            response = get_otp(self.bot_name, user_id, message)
+            if response:
+                return {self.bot_name: response}
+
+        ACTION_MAPPING = {
+            "weather": get_weather,
+            "otp_request_en": lambda: get_otp(self.bot_name, user_id, message),
+            "otp_request_sw": lambda: get_otp(self.bot_name, user_id, message),
+            "transfer_payment": lambda: transfer_payment(
+                self.bot_name, user_id, message
+            ),
+            "recover_payment": lambda: recover_payment(self.bot_name, user_id, message),
+            "booking_request": lambda: get_booking(self.bot_name, user_id, message),
+        }
+
         # Detect language of the message
         language = detect_language(message)
 
@@ -113,19 +208,8 @@ class ChatBot:
         # Check for special requests
         # Check if the intent has a function mapped to it
         if tag in ACTION_MAPPING:
-            return ACTION_MAPPING[tag]()  # Execute function dynamically
-
-        special_response = handle_driver_request(
-            self.bot_name, user_id, message, response
-        )
-        if special_response:
-            return special_response
-
-        special_response = handle_passenger_request(
-            self.bot_name, user_id, message, response
-        )
-        if special_response:
-            return special_response
+            # Execute function dynamically
+            return ACTION_MAPPING[tag]()
 
         return {self.bot_name: response}
 

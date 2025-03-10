@@ -5,7 +5,7 @@ import os
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from database.db_connection import cursor
+from database.db_connection import cursor, conn
 from config import INTENTS_FILE
 
 
@@ -15,14 +15,23 @@ def load_data_into_db():
     """
 
     # Load JSON data
-    with open(INTENTS_FILE, "r") as f:
+    with open(INTENTS_FILE, "r", encoding="utf-8") as f:
         intents_data = json.load(f)
 
     for intent in intents_data["intents"]:
         tag = intent["tag"]
+        category = intent.get("category", "general")  # Default category if not provided
+        context = intent.get("context")  # Might be None
+        language = intent.get("language")  # Might be None
 
-        # Insert tag into `intents` table
-        cursor.execute("INSERT IGNORE INTO intents (tag) VALUES (%s)", (tag,))
+        # Insert intent into `intents` table
+        cursor.execute(
+            """
+            INSERT IGNORE INTO intents (tag, category, context, language)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (tag, category, context, language),
+        )
 
         # Get the intent_id
         cursor.execute("SELECT id FROM intents WHERE tag = %s", (tag,))
@@ -41,3 +50,11 @@ def load_data_into_db():
                 "INSERT INTO responses (intent_id, response) VALUES (%s, %s)",
                 (intent_id, response),
             )
+
+    # Commit the changes
+    conn.commit()
+    print("✅ Intents data imported successfully!")
+
+
+if __name__ == "__main__":
+    load_data_into_db()

@@ -1,5 +1,4 @@
 import re
-import translator
 from rapidfuzz import fuzz
 from langdetect import detect, LangDetectException
 
@@ -7,7 +6,7 @@ from lib.logger import Logger
 
 
 # Configure logging
-logger = Logger(name="otp_request_service").get_logger()
+logger = Logger(name="match").get_logger()
 
 
 # Function to check for transfer intent
@@ -66,9 +65,9 @@ def detect_language(message):
         return "en"  # Default to English if detection fails
 
 
-def translate_fallback_response(response, target_lang):
-    translated_text = translator.translate(response, dest=target_lang).text
-    return translated_text
+# def translate_fallback_response(response, target_lang):
+#     translated_text = translator.translate(response, dest=target_lang).text
+#     return translated_text
 
 
 # Function to detect language (default to English if unsure) and store in user context
@@ -84,3 +83,8 @@ def detect_and_store_language(user_id, message, user_context):
         user_context[user_id]["language"] = language
 
     return user_context[user_id]["language"]
+
+
+def normalize_tag(tag):
+    """Remove language suffix (_sw, _en) to standardize context keys."""
+    return re.sub(r"_(sw|en)$", "", tag)  # Removes _sw or _en from the tag

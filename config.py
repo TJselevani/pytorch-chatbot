@@ -17,7 +17,7 @@ DB_CONFIG = {
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": "chat_db",
+    "database": "open_db",
 }
 
 # Model configuration

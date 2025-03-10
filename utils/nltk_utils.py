@@ -3,7 +3,7 @@ import nltk
 import string
 from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 
 
 # nltk.download("punkt")
@@ -54,16 +54,38 @@ def bag_of_words(tokenized_sentence, words):
     return bag
 
 
-def preprocess_text(sentence):
-    """Ensuring that words are reduced to their base form to improve model generalization."""
-    """Removing unnecessary words that do not contribute to intent detection."""
+def preprocess_text(text):
+    if isinstance(text, list):  # Convert list to a string if needed
+        text = " ".join(text)
+
+    words = nltk.word_tokenize(text.lower())
+    words = [lemmatizer.lemmatize(word) for word in words if word.isalnum()]
+    return words
+
+
+def pre_process_text(sentence):
+    """
+    Preprocesses a given sentence by:
+    1. Ensuring words are reduced to their base form (lemmatization) for better generalization.
+    2. Removing punctuation and stopwords to focus on meaningful content.
+
+    Args:
+        sentence (str or list): The input sentence or list of words.
+
+    Returns:
+        list: A list of cleaned and processed words.
+    """
+    if isinstance(sentence, list):
+        sentence = " ".join(sentence)  # Convert list to string if needed
+
     tokens = nltk.word_tokenize(sentence)  # Tokenization
     tokens = [
         lemmatizer.lemmatize(word.lower())
         for word in tokens
-        if word not in string.punctuation
-    ]  # Lemmatization
+        if word not in string.punctuation  # Remove punctuation
+    ]
     tokens = [word for word in tokens if word not in stop_words]  # Stopword Removal
+
     return tokens
 
 
@@ -72,3 +94,16 @@ def create_bow(sentence, words):
     sentence_words = preprocess_text(sentence)
     bag = [1 if w in sentence_words else 0 for w in words]
     return np.array(bag)
+
+
+def augment_sentence(sentence):
+    words = sentence.split()
+    augmented = []
+    for word in words:
+        synonyms = wordnet.synsets(word)
+        if synonyms:
+            synonym = synonyms[0].lemmas()[0].name()
+            augmented.append(synonym)
+        else:
+            augmented.append(word)
+    return " ".join(augmented)

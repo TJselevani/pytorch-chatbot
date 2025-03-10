@@ -9,7 +9,7 @@ from lib.logger import Logger
 TIMEOUT_SECONDS = 60  # 1-minute timeout
 
 # Configure logging
-logger = Logger(name="otp_request_service").get_logger()
+logger = Logger(name="otp_handler", separate_file=True).get_logger()
 
 
 # Function to get the response in the detected language

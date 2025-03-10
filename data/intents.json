@@ -1,8 +1,9 @@
 {
   "intents": [
     {
-      "tag": "greeting",
+      "tag": "greeting_en",
       "category": "greeting",
+      "language": "English",
       "patterns": [
         "Hi",
         "Hey",
@@ -13,72 +14,68 @@
       ],
       "responses": [
         "Hey :-)",
-        "Hello, thanks for visiting",
+        "Hello, thanks for visiting. How may I be of service?",
         "Hi there, what can I do for you?",
         "Hi there, how can I help?",
-        "Good day to you too"
-      ],
-      "context_set": "greeting_en"
+        "Good day to you too, what do you require?"
+      ]
     },
-
     {
-      "tag": "greeting",
+      "tag": "greeting_sw",
       "category": "greeting",
+      "language": "Swahili",
       "patterns": ["Habari", "Jambo", "hujambo", "niaje", "Mambo", "Shikamoo"],
       "responses": [
         "Habari yako! Karibu. Naweza kuhudumia kivipi?",
-        "Jambo! Nafurahi kukuona.Nikupe usaidizi gani",
+        "Jambo! Nafurahi kukuona. Nikupe usaidizi gani?",
         "Mambo! Unahitaji msaada gani?",
-        "Shikamoo! Karibu sana, unahitaji usaidizi upi? "
-      ],
-      "context_set": "greeting_sw"
+        "Shikamoo! Karibu sana, unahitaji usaidizi upi?"
+      ]
     },
-
     {
-      "tag": "goodbye",
+      "tag": "goodbye_en",
       "category": "goodbye",
+      "language": "English",
       "patterns": ["Bye", "See you later", "Goodbye"],
       "responses": [
         "See you later, thanks for visiting",
         "Have a nice day",
         "Bye! Come back again soon."
-      ],
-      "context_set": "goodbye_en"
+      ]
     },
-
     {
-      "tag": "goodbye",
+      "tag": "goodbye_sw",
       "category": "goodbye",
+      "language": "Swahili",
       "patterns": ["Kwaheri", "Tutaonana baadaye", "Baadaye"],
       "responses": [
         "Kwaheri! Asante kwa kutembelea.",
         "Tutaonana baadaye!",
         "Baadaye! Karibu tena."
-      ],
-      "context_set": "goodbye_sw"
+      ]
     },
     {
-      "tag": "thanks",
+      "tag": "thanks_en",
       "category": "small_talk",
+      "language": "English",
       "patterns": ["Thanks", "Thank you", "That's helpful", "Thank's a lot!"],
-      "responses": ["Happy to help!", "Any time!", "My pleasure"],
-      "context_set": "thanks_en"
+      "responses": ["Happy to help!", "Any time!", "My pleasure"]
     },
     {
-      "tag": "thanks",
+      "tag": "thanks_sw",
       "category": "small_talk",
+      "language": "Swahili",
       "patterns": ["Asante", "Shukrani", "Nashukuru"],
       "responses": [
         "Asante sana!",
         "Karibu tena!",
         "Nashukuru pia, uko huru kuuliza maswali mengine."
-      ],
-      "context_set": "thanks_sw"
+      ]
     },
-
     {
       "tag": "items",
       "category": "products",
+      "language": "Multilingual",
       "patterns": [
         "Which items do you have?",
         "What kinds of items are there?",
@@ -94,10 +91,10 @@
         "Tunatoa kahawa na chai"
       ]
     },
-
     {
-      "tag": "payments",
+      "tag": "payments_en",
       "category": "payments",
+      "language": "English",
       "patterns": [
         "Do you take credit cards?",
         "Do you accept MPesa?",
@@ -107,13 +104,12 @@
         "Are you cash only?",
         "Do you accept cash payment?"
       ],
-      "responses": ["We accept MPesa, USSD and Cash payments only"],
-      "context_set": "payments_en"
+      "responses": ["We accept MPesa, USSD, and Cash payments only"]
     },
-
     {
-      "tag": "payments",
+      "tag": "payments_sw",
       "category": "payments",
+      "language": "Swahili",
       "patterns": [
         "Mnatumia kadi za mkopo?",
         "Mnakubali kulipa na MPesa?",
@@ -121,25 +117,25 @@
         "Naweza kulipa kutumia simu?",
         "Mnakubali pesa taslimu tu?"
       ],
-      "responses": ["Tunapokea MPesa, USSD na hela za mkononi"],
-      "context_set": "payments_sw"
+      "responses": ["Tunapokea MPesa, USSD na hela za mkononi"]
     },
     {
       "tag": "traveling",
       "category": "traveling",
+      "language": "Multilingual",
       "patterns": [
         "How long does traveling take?",
         "Usafirishaji unachukua muda gani?"
       ],
       "responses": [
-        "travelling takes 20 - 40 min depending on destination",
-        "Usafirishaji unachukua chini ya saa moja kulingana na"
-      ],
-      "context_set": "traveling_en"
+        "Traveling takes 20 - 40 min depending on the destination",
+        "Usafirishaji unachukua chini ya saa moja kulingana na safari"
+      ]
     },
     {
-      "tag": "funny",
+      "tag": "funny_en",
       "category": "jokes",
+      "language": "English",
       "patterns": [
         "Tell me a joke!",
         "Tell me something funny!",
@@ -148,35 +144,23 @@
       "responses": [
         "Why did the hipster burn his mouth? He drank the coffee before it was cool.",
         "What did the buffalo say when his son left for college? Bison.",
-        "A perfectionist walked into a bar...apparently, the bar wasn't set high enough",
-        "I ate a clock yesterday, it was very time-consuming",
-        "Never criticize someone until you've walked a mile in their shoes. That way, when you criticize them, they won't be able to hear you from that far away. Plus, you'll have their shoes.",
-        "The world tongue-twister champion just got arrested. I hear they're gonna give him a really tough sentence.",
-        "I own the world's worst thesaurus. Not only is it awful, it's awful.",
-        "What did the traffic light say to the car? \"Don't look now, I'm changing.\"",
-        "What do you call a snowman with a suntan? A puddle.",
-        "How does a penguin build a house? Igloos it together",
-        "I went to see the doctor about my short-term memory problems – the first thing he did was make me pay in advance",
-        "As I get older and I remember all the people I’ve lost along the way, I think to myself, maybe a career as a tour guide wasn’t for me.",
-        "o what if I don't know what 'Armageddon' means? It's not the end of the world."
-      ],
-      "context_set": "funny_en"
+        "I ate a clock yesterday, it was very time-consuming."
+      ]
     },
-
     {
-      "tag": "funny",
+      "tag": "funny_sw",
       "category": "jokes",
+      "language": "Swahili",
       "patterns": ["Niambie mzaha!", "Unajua mzaha?", "Nichekeshe kidogo!"],
       "responses": [
         "Kwa nini kuku alivuka barabara? Kwenda upande mwingine!",
         "Kwa nini nyani alicheka? Aliona ndugu yake kwenye kioo!"
-      ],
-      "context_set": "funny_sw"
+      ]
     },
-
     {
       "tag": "datetime",
       "category": "datetime",
+      "language": "English",
       "patterns": [
         "What is the time",
         "what is the date",
@@ -184,220 +168,136 @@
         "time",
         "tell me the date",
         "day",
-        "what day is is today"
+        "what day is today"
       ],
-      "responses": ["Date and Time"],
-      "context_set": "datetime_en"
+      "responses": ["{Date and Time}"]
     },
-
     {
-      "tag": "whatsup",
-      "category": "small_talk",
-      "patterns": ["Whats up", "Wazzup", "How are you", "sup", "How you doing"],
-      "responses": ["All good..What about you?"],
-      "context_set": "whatsup_en"
-    },
-
-    {
-      "tag": "otp_request",
-      "category": "otp",
+      "tag": "booking_info_en",
+      "category": "booking",
+      "language": "English",
       "patterns": [
-        "Can you change my OTP for this phone number {phone_number}",
-        "can I get an otp on this phone number",
-        "can I get my verification code",
-        "I've not received my otp",
+        "how can I book a vehicle",
+        "I would like to book a matatu",
+        "how do I book a matatu",
+        "what's the process of booking"
+      ],
+      "responses": [
+        "Please provide details of your trip: Book from <Location A> to <Location B>.",
+        "To book a matatu provide details of your trip: Book from <Location A> to <Location B>."
+      ]
+    },
+    {
+      "tag": "booking_info_sw",
+      "category": "booking",
+      "language": "Swahili",
+      "patterns": [
+        "naweza kubook aje gari",
+        "mtu anaweza weka nafasi ya gari kwa njia gani",
+        "mtu ana book gari aje",
+        "kubook gari ni aje"
+      ],
+      "responses": [
+        "Tafadhali toa maelezo ya safari yako: Nafasi Kutoka <Eneo A> hadi <Eneo B>.",
+        "Ili kuweka nafasi yako kwenye gari, toa maelezo ya safari yako: Nafasi Kutoka <Eneo A> hadi <Eneo B>."
+      ]
+    },
+
+    {
+      "tag": "booking_request_en",
+      "category": "booking",
+      "language": "English",
+      "patterns": [
+        "Book from A to B",
+        "Save from A to B",
+        "Reserve from A to B"
+      ],
+      "responses": ["{DYNAMIC}"]
+    },
+    {
+      "tag": "booking_request_sw",
+      "category": "booking",
+      "language": "Swahili",
+      "patterns": [
+        "Nafasi from A to B",
+        "Nafasi kutoka A to B",
+        "Nafasi kutoka A hadi B"
+      ],
+      "responses": ["{DYNAMIC}"]
+    },
+    {
+      "tag": "otp_request_en",
+      "category": "otp",
+      "language": "English",
+      "patterns": [
+        "Can you change my OTP for this phone number {phone_number}?",
+        "Can I get an OTP on this phone number?",
+        "I've not received my OTP",
         "I've not gotten my code"
       ],
-      "responses": [
-        "Alright, kindly help me with your phone number and fleet number."
-      ],
-      "context_set": "otp_request_en"
+      "responses": ["{DYNAMIC}"]
     },
-
     {
-      "tag": "otp_request",
+      "tag": "otp_request_sw",
       "category": "otp",
+      "language": "Swahili",
       "patterns": [
         "Nibadilishie OTP kwa hii number {phone_number}",
-        "sijapata otp kwa simu yangu",
-        "sijapata any code kwa simu"
+        "Sijapata OTP kwa simu yangu",
+        "Sijapata code yoyote kwa simu"
       ],
-      "responses": [
-        "Sawasawa, tafadhali nisaidie na nambari ya simu na nambari ya gari lako."
-      ],
-      "context_set": "otp_request_sw"
+      "responses": ["{DYNAMIC}"]
     },
-
     {
-      "tag": "transfer_request",
+      "tag": "transfer_request_en",
       "category": "account",
+      "language": "English",
       "patterns": [
         "Transfer for me ksh {amount} from {source_fleet} to {destination_fleet}",
-        "I want to transfer ksh {amount} from {source_fleet} to {destination_fleet}",
-        "transfer {amount} from {source_fleet} to {destination_fleet}",
-        "transfer {amount} {source_fleet} {destination_fleet}"
+        "Transfer 500 from {se00} to {se01}",
+        "Transfer 500 from {sm00} to {sm01}",
+        "Transfer {500} from {se00} to {sm01}",
+        "Transfer ksh {500} from {sm00} to {se01}"
       ],
-      "responses": [
-        "Okay, Kindly wait as your cash transfer request is being processed."
-      ],
-      "context_set": "transfer_request_en"
+      "responses": ["{DYNAMIC}"]
     },
 
     {
-      "tag": "transfer_request",
+      "tag": "transfer_request_sw",
       "category": "account",
+      "language": "Swahili",
       "patterns": [
-        "Nataka kutuma ksh {amount} from {source_fleet} to {destination_fleet}",
-        "Nataka kutuma {amount} from {source_fleet} to {destination_fleet}",
-        "Nataka kutuma {amount} toka {source_fleet} hadi {destination_fleet}",
-        "Naeza tuma ksh {amount} from {source_fleet} to {destination_fleet}",
-        "kutuma {amount} from {source_fleet} to {destination_fleet}",
-        "tuma {amount} {source_fleet} {destination_fleet}"
+        "tuma ksh {amount} from {source_fleet} to {destination_fleet}",
+        "tuma ksh {amount} kutoka {source_fleet} hadi {destination_fleet}",
+        "Nataka kutuma ksh {amount} kutoka {source_fleet} hadi {destination_fleet}"
       ],
-      "responses": [
-        "Tafadhali subiri ombi lako la kutuma hela linashughulikiwa."
-      ],
-      "context_set": "transfer_request_sw"
+      "responses": ["{DYNAMIC}"]
     },
 
     {
-      "tag": "booking_details_request",
-      "category": "booking",
+      "tag": "recover_request_en",
+      "category": "account",
+      "language": "English",
       "patterns": [
-        "Can i book a matatu?",
-        "How do I book a vehicle?",
-        "I want to book a car?",
-        "I want to book a matatu?",
-        "Help me book a vehicle from {point A} to {B}.",
-        "Help me book a matatu from {point A} to {B}."
+        "Recover for me ksh {amount} from {source_fleet} to {destination_fleet}",
+        "Recover 500 from {se00} to {se01}",
+        "Recover 500 from {sm00} to {sm01}",
+        "Recover {500} from {se00} to {sm01}",
+        "Recover ksh {500} from {sm00} to {se01}"
       ],
-      "responses": [
-        "You can book a vehicle by sending a message with the word 'reserve' or 'save' followed by details of your trip: Reserve from <Location A> to <Location B>.",
-        "You can book a matatu by sending a message with the word 'reserve' or 'save' followed by details of your trip: Reserve from <Location A> to <Location B>."
-      ],
-      "context_set": "booking_details_request_en"
+      "responses": ["{DYNAMIC}"]
     },
 
     {
-      "tag": "booking_details_request",
-      "category": "booking",
+      "tag": "recover_request_sw",
+      "category": "account",
+      "language": "Swahili",
       "patterns": [
-        "Naeza book aje gari?",
-        "Naweza book aje matatu?",
-        "Naeza book gari kutoka mahali {hapa} hadi {pale}?"
+        "Wasilisha ksh {amount} from {source_fleet} to {destination_fleet}",
+        "Wasilisha ksh {amount} kutoka {source_fleet} hadi {destination_fleet}",
+        "Nataka Wasilisha ksh {amount} kutoka {source_fleet} hadi {destination_fleet}"
       ],
-      "responses": [
-        "Ili kuweka nafasi ya gari, tafadhali toa maelezo ya mahali ulipo na unakoelekea: Nafasi kutoka <Eneo A> hadi <Eneo B>."
-      ],
-      "context_set": "booking_details_request_sw"
-    },
-
-    {
-      "tag": "payment_correction_request",
-      "category": "payments",
-      "patterns": [
-        "I paid to the wrong fleet number, how do I transfer it to the correct one?",
-        "I sent money to the wrong fleet number, what should I do?",
-        "How do I correct a wrong fleet number payment?",
-        "I made the wrong payment"
-      ],
-      "responses": [
-        "Please share your fleet number details in this format: Recover <amount> from <se00> to <se01>, and we will process your request.",
-        "Kindly provide the incorrect fleet number and the correct one, and we will assist with the transfer: Recover <amount> from <se00> to <se01>"
-      ],
-      "context_set": "payment_correction_request_en"
-    },
-
-    {
-      "tag": "payment_correction_request",
-      "category": "payments",
-      "patterns": [
-        "nimelipa gari vibaya",
-        "nimelipa vibaya",
-        "Nimelipa kwa nambari mbaya ya gari, naweza aje kuhamisha?",
-        "Nimelipa kwa gari isiyo sahihi, naweza kupataje pesa zangu?",
-        "Naeza aje kurekebisha malipo kwa nambari mbaya ya gari?"
-      ],
-      "responses": [
-        "Tafadhali shiriki nambari yako ya gari kwa fomati hii: Recover kutoka <se00> hadi <se01>, kisha tutashughulikia ombi lako."
-      ],
-      "context_set": "payment_correction_request_sw"
-    },
-
-    {
-      "tag": "wallet_load_request",
-      "category": "wallet",
-      "patterns": [
-        "How do I load my wallet?",
-        "How can I add money to my wallet?"
-      ],
-      "responses": [
-        "To load your wallet, use the USSD code *123# and follow the instructions, or send a message with 'LOAD <account_number>' to add funds."
-      ],
-      "context_set": "wallet_load_request_en"
-    },
-
-    {
-      "tag": "wallet_load_request",
-      "category": "wallet",
-      "patterns": [
-        "Naeza aje kuweka pesa kwenye pochi yangu?",
-        "nataka kuongeza pesa kwa pochi yangu",
-        "naeza ongeza pesa aje kwa pochi?"
-      ],
-      "responses": [
-        "Ili kuweka pesa kwenye pochi yako, tumia USSD *112233# na ufuate maelekezo, au tuma ujumbe wenye 'LOAD <nambari_ya_akaunti>' kuongeza pesa."
-      ],
-      "context_set": "wallet_load_request_sw"
-    },
-
-    {
-      "tag": "wallet_pay_request",
-      "category": "wallet",
-      "patterns": [
-        "How do I pay from my wallet?",
-        "How can I make a payment using my wallet?"
-      ],
-      "responses": [
-        "To pay from your wallet, send 'PAY <amount> <account_number> <fleet_number>', or use *123# to complete the payment."
-      ],
-      "context_set": "wallet_pay_request_en"
-    },
-
-    {
-      "tag": "wallet_pay_request",
-      "category": "wallet",
-      "patterns": [
-        "Naeza aje kulipa kutoka kwenye pochi yangu?",
-        "nalipa aje kutumia pochi"
-      ],
-      "responses": [
-        "Ili kulipa kutoka kwa pochi yako, tuma 'PAY <malipo> <nambari_ya_akaunti> <nambari_ya_gari>' kwa ujumbe, au tumia *112233# kukamilisha malipo."
-      ],
-      "context_set": "wallet_pay_request_sw"
-    },
-
-    {
-      "tag": "weather",
-      "category": "weather",
-      "patterns": [
-        "What is the weather like?",
-        "Tell me today's weather",
-        "How's the weather?"
-      ],
-      "responses": ["(DYNAMIC)"]
-    },
-
-    {
-      "tag": "noanswer",
-      "category": "small_talk",
-      "patterns": [],
-      "responses": [
-        "Sorry, can't understand you",
-        "Please give me more info",
-        "Not sure I understand"
-      ],
-      "context": "noanswer_en"
+      "responses": ["{DYNAMIC}"]
     }
   ]
 }

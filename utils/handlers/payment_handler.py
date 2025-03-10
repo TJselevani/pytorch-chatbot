@@ -3,7 +3,7 @@ from utils.context import user_context
 from lib.logger import Logger
 
 # Configure logging - only create one instance
-logger = Logger(name="transfer_request_service").get_logger()
+logger = Logger(name="payment_handler", separate_file=True).get_logger()
 
 
 def get_response_text(language, key):

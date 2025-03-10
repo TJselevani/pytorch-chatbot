@@ -33,7 +33,7 @@ def main():
             print("🔹 Importing data into the database...")
             subprocess.run(["python", "scripts/import_db_data.py"], check=True)
 
-            open(DB_INITIALIZED_FILE, "w").close()
+            open(DB_INITIALIZED_FILE, "w", encoding="utf-8").close()
             print("✅ Database setup completed!")
 
         # Create a flag file to avoid re-training model every time

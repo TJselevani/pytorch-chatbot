@@ -5,14 +5,14 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
+# Add project root to sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 # Import from relative paths based on the new structure
 from utils.nltk_utils import bag_of_words, tokenize, stem
 from models.neural_net import NeuralNet
 from database.db_connection import conn, cursor
 from config import TRAINING_DATA_FILE
-
-# Add project root to sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
 def train():
@@ -42,7 +42,7 @@ def train():
     conn.close()
 
     # Stem and preprocess words
-    ignore_words = ["?", ".", "!"]
+    ignore_words = ["?", ".", "!", "{", "}", "+", "-", ";", ":"]
     all_words = [stem(w) for w in all_words if w not in ignore_words]
     all_words = sorted(set(all_words))
     tags = sorted(set(tags))
@@ -58,6 +58,7 @@ def train():
         # X: bag of words for each pattern_sentence
         bag = bag_of_words(pattern_sentence, all_words)
         X_train.append(bag)
+
         # y: PyTorch CrossEntropyLoss needs only class labels, not one-hot
         label = tags.index(tag)
         y_train.append(label)
