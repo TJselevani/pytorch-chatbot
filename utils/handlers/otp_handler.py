@@ -6,6 +6,7 @@ from utils.extractors import (
 )
 from lib.logger import Logger
 from utils.services.account_service import AccountService
+from config import SMS_CONFIG
 
 TIMEOUT_SECONDS = 180  # 1-minute timeout
 
@@ -13,9 +14,9 @@ TIMEOUT_SECONDS = 180  # 1-minute timeout
 logger = Logger(name="otp_handler", separate_file=True).get_logger()
 
 # Initialize AccountService with API details
-SMS_API_KEY = "YOUR_SMS_API_KEY"
-SMS_BASE_URL = "https://www.w3schools.com/python/demopage.php"  # "YOUR_SMS_API_URL"
-SENDER_ID = "YOUR_SENDER_ID"
+SMS_API_KEY = SMS_CONFIG["apiKey"]
+SMS_BASE_URL = SMS_CONFIG["baseurl"]  # "YOUR_SMS_API_URL"
+SENDER_ID = SMS_CONFIG["senderID"]
 account_service = AccountService(SMS_API_KEY, SMS_BASE_URL, SENDER_ID)
 
 

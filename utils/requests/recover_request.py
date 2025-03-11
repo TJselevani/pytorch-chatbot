@@ -1,4 +1,3 @@
-import re
 from utils.context import user_context
 from utils.match import detect_language
 from utils.handlers.payment_handler import (
@@ -33,13 +32,10 @@ def recover_payment(bot_name, user_id, message):
             return recover_response
 
     # {1} Process wrong payment corrections
-    wrong_payment_keywords = ["wrong fleet", "incorrect fleet", "transfer"]
+    wrong_payment_keywords = ["recover", "wrong fleet", "incorrect fleet", "mistake"]
     if any(is_match(word, message) for word in wrong_payment_keywords):
-        if is_pattern(message, "recover", "from", "to") or re.search(
-            r"\d+(?:\.\d{2})?\s+(se|sm)\d{2}\s+(se|sm)\d{2}", message, re.IGNORECASE
-        ):
+        if is_pattern(message, "recover", "from", "to"):
             logger.info("Recover request detected")
-            logger.debug("Transfer request detected")
             return handle_recover_request(bot_name, user_id, message, language)
 
     logger.debug("No special handling needed")

@@ -73,18 +73,10 @@ class ChatBot:
             "otp_request_en": lambda: get_otp(self.bot_name, user_id, message),
             "otp_request_sw": lambda: get_otp(self.bot_name, user_id, message),
             "otp_verification": lambda: get_otp(self.bot_name, user_id, message),
-            "transfer_request_en": lambda: transfer_payment(
+            "transfer_request": lambda: transfer_payment(
                 self.bot_name, user_id, message
             ),
-            "transfer_request_sw": lambda: transfer_payment(
-                self.bot_name, user_id, message
-            ),
-            "recover_request_en": lambda: recover_payment(
-                self.bot_name, user_id, message
-            ),
-            "recover_request_sw": lambda: recover_payment(
-                self.bot_name, user_id, message
-            ),
+            "recover_request": lambda: recover_payment(self.bot_name, user_id, message),
             "booking_request_en": lambda: get_booking(self.bot_name, user_id, message),
             "booking_request_sw": lambda: get_booking(self.bot_name, user_id, message),
         }

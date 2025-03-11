@@ -1,4 +1,3 @@
-import re
 from utils.context import user_context
 from utils.handlers.payment_handler import (
     handle_transfer_request,
@@ -31,11 +30,16 @@ def transfer_payment(bot_name, user_id, message):
             return transfer_response
 
     # {1} Check for cash transfer requests - use is_pattern to detect transfer patterns
-    transfer_key_words = ["transfer", "from", "to"]
+    transfer_key_words = [
+        "transfer",
+        "send money",
+        "move funds",
+        "shift balance",
+        "money to",
+    ]
+
     if any(is_match(word, message) for word in transfer_key_words):
-        if is_pattern(message, "transfer", "from", "to") or re.search(
-            r"\d+(?:\.\d{2})?\s+(se|sm)\d{2}\s+(se|sm)\d{2}", message, re.IGNORECASE
-        ):
+        if is_pattern(message, "transfer", "from", "to"):
             logger.info("Transfer request detected")
             return handle_transfer_request(bot_name, user_id, message, language)
 

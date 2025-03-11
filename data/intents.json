@@ -170,7 +170,7 @@
         "day",
         "what day is today"
       ],
-      "responses": ["{Date and Time}"]
+      "responses": ["{DYNAMIC}"]
     },
     {
       "tag": "booking_info_en",
@@ -248,54 +248,115 @@
       ],
       "responses": ["{DYNAMIC}"]
     },
+
     {
-      "tag": "transfer_request_en",
+      "tag": "transfer_info_en",
       "category": "account",
       "language": "English",
+      "patterns": [
+        "How do I transfer money?",
+        "What is the process for transferring funds?",
+        "How to initiate a transfer request?",
+        "Transfer information",
+        "How to transfer money from one fleet to another?"
+      ],
+      "responses": [
+        "To initiate a transfer, simply type 'Transfer {amount} from {source_fleet} to {destination_fleet}'. For example, 'Transfer 500 from sm34 to sm45'."
+      ]
+    },
+
+    {
+      "tag": "transfer_info_sw",
+      "category": "account",
+      "language": "Swahili",
+      "patterns": [
+        "Ninavyoweza kutuma pesa?",
+        "Ni mchakato gani wa kutuma fedha?",
+        "Jinsi ya kuanzisha ombi la ubadilishaji?",
+        "Maelezo ya ubadilishaji",
+        "Jinsi ya kutuma pesa kutoka kikosi kimoja hadi kingine?"
+      ],
+      "responses": [
+        "Ili kuanzisha ubadilishaji, andika tu 'Peleka {amount} kutoka {source_fleet} hadi {destination_fleet}'. Kwa mfano, 'Peleka 500 kutoka sm34 hadi sm45'."
+      ]
+    },
+
+    {
+      "tag": "transfer_request",
+      "category": "account",
+      "language": "Multilingual",
       "patterns": [
         "Transfer for me ksh {amount} from {source_fleet} to {destination_fleet}",
-        "Transfer 500 from {se00} to {se01}",
-        "Transfer 500 from {sm00} to {sm01}",
-        "Transfer {500} from {se00} to {sm01}",
-        "Transfer ksh {500} from {sm00} to {se01}"
+        "Transfer {amount} from {source_fleet} to {destination_fleet}",
+        "Transfer ksh {amount} from {source_fleet} to {destination_fleet}",
+        "Transfer {amount} from sm{source} to sm{destination}",
+        "Transfer {amount} from se{source} to se{destination}",
+        "Transfer {amount} from sm{source} to se{destination}",
+        "Transfer {amount} from se{source} to sm{destination}",
+        "Transfer ksh {amount} from sm{source} to sm{destination}",
+        "Transfer ksh {amount} from sm{source} to se{destination}",
+        "Transfer ksh {amount} from se{source} to sm{destination}",
+        "Transfer ksh {amount} from se{source} to se{destination}",
+        "Transfer {amount} from sm{source} to sm{destination} fleet",
+        "Transfer {amount} from sm{source} to se{destination} fleet",
+        "Transfer {amount} from se{source} to sm{destination} fleet",
+        "Transfer {amount} from se{source} to se{destination} fleet"
       ],
       "responses": ["{DYNAMIC}"]
     },
 
     {
-      "tag": "transfer_request_sw",
-      "category": "account",
-      "language": "Swahili",
-      "patterns": [
-        "tuma ksh {amount} from {source_fleet} to {destination_fleet}",
-        "tuma ksh {amount} kutoka {source_fleet} hadi {destination_fleet}",
-        "Nataka kutuma ksh {amount} kutoka {source_fleet} hadi {destination_fleet}"
-      ],
-      "responses": ["{DYNAMIC}"]
-    },
-
-    {
-      "tag": "recover_request_en",
+      "tag": "recover_info_en",
       "category": "account",
       "language": "English",
       "patterns": [
-        "Recover for me ksh {amount} from {source_fleet} to {destination_fleet}",
-        "Recover 500 from {se00} to {se01}",
-        "Recover 500 from {sm00} to {sm01}",
-        "Recover {500} from {se00} to {sm01}",
-        "Recover ksh {500} from {sm00} to {se01}"
+        "How do I recover money sent to the wrong fleet?",
+        "What if I sent money to the wrong fleet number?",
+        "How to recover funds sent incorrectly?",
+        "Recovery information for wrong fleet transfer",
+        "How to get back money sent to wrong fleet?"
       ],
-      "responses": ["{DYNAMIC}"]
+      "responses": [
+        "To recover money sent to the wrong fleet, simply type 'Recover {amount} from {wrong_fleet} to {correct_fleet}'. For example, 'Recover 500 from sm34 to sm45'."
+      ]
     },
 
     {
-      "tag": "recover_request_sw",
+      "tag": "recover_info_sw",
       "category": "account",
       "language": "Swahili",
       "patterns": [
-        "Wasilisha ksh {amount} from {source_fleet} to {destination_fleet}",
-        "Wasilisha ksh {amount} kutoka {source_fleet} hadi {destination_fleet}",
-        "Nataka Wasilisha ksh {amount} kutoka {source_fleet} hadi {destination_fleet}"
+        "Ninavyoweza kurejesha pesa zilizotumwa kwa kikosi kisichosahihi?",
+        "Kama nilituma pesa kwa nambari ya kikosi isiyo sahihi, ninachofanya?",
+        "Jinsi ya kurejesha fedha zilizotumwa vibaya?",
+        "Maelezo ya kurejesha pesa zilizotumwa kwa kikosi kisichosahihi",
+        "Ninavyoweza kupata pesa zilizotumwa kwa kikosi kisichosahihi?"
+      ],
+      "responses": [
+        "Ili kurejesha pesa zilizotumwa kwa kikosi kisichosahihi, andika tu 'Rejesha {amount} kutoka {wrong_fleet} hadi {correct_fleet}'. Kwa mfano, 'Rejesha 500 kutoka sm34 hadi sm45'."
+      ]
+    },
+
+    {
+      "tag": "recover_request",
+      "category": "account",
+      "language": "Multilingual",
+      "patterns": [
+        "Recover for me ksh {amount} from {source_fleet} to {destination_fleet}",
+        "Recover {amount} from {source_fleet} to {destination_fleet}",
+        "Recover ksh {amount} from {source_fleet} to {destination_fleet}",
+        "Recover {amount} from sm{source} to sm{destination}",
+        "Recover {amount} from se{source} to se{destination}",
+        "Recover {amount} from sm{source} to se{destination}",
+        "Recover {amount} from se{source} to sm{destination}",
+        "Recover ksh {amount} from sm{source} to sm{destination}",
+        "Recover ksh {amount} from sm{source} to se{destination}",
+        "Recover ksh {amount} from se{source} to sm{destination}",
+        "Recover ksh {amount} from se{source} to se{destination}",
+        "Recover {amount} from sm{source} to sm{destination} fleet",
+        "Recover {amount} from sm{source} to se{destination} fleet",
+        "Recover {amount} from se{source} to sm{destination} fleet",
+        "Recover {amount} from se{source} to se{destination} fleet"
       ],
       "responses": ["{DYNAMIC}"]
     }

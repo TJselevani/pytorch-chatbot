@@ -107,6 +107,7 @@ def handle_awaiting_transfer_confirmation(bot_name, user_id, message, language):
             # Clean up context
             user_context[user_id].pop("pending_transfer", None)
             user_context[user_id].pop("awaiting_transfer_confirmation", None)
+            user_context.pop(user_id, None)
 
             # Log the confirmed transfer
             amount = transfer_details.get("amount")
@@ -171,6 +172,7 @@ def handle_awaiting_recover_confirmation(bot_name, user_id, message, language):
             # Clean up context
             user_context[user_id].pop("pending_recover", None)
             user_context[user_id].pop("awaiting_recover_confirmation", None)
+            user_context.pop(user_id, None)
 
             # Log the confirmed transfer
             amount = transfer_details.get("amount")

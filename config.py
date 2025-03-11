@@ -17,7 +17,7 @@ DB_CONFIG = {
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": "open_db",
+    "database": "new_schema",
 }
 
 # Model configuration
@@ -26,4 +26,10 @@ MODEL_CONFIG = {
     "num_epochs": 1000,
     "batch_size": 8,
     "learning_rate": 0.001,
+}
+
+SMS_CONFIG = {
+    "baseurl": "https://www.w3schools.com/python/demopage.php",
+    "apiKey": "YOUR_SMS_API_KEY",
+    "senderID": "",
 }
