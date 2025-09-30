@@ -28,8 +28,18 @@ MODEL_CONFIG = {
     "learning_rate": 0.001,
 }
 
+
 SMS_CONFIG = {
-    "baseurl": "https://www.w3schools.com/python/demopage.php",
-    "apiKey": "YOUR_SMS_API_KEY",
-    "senderID": "",
+    "baseurl": "https://httpbin.org",  # "https://www.w3schools.com/python/demopage.php",
+    "apiKey": "TEST_API_KEY",
+    "senderID": "TESTSENDER",
+}
+
+# config.py - Add LangGraph configuration
+LANGCHAIN_CONFIG = {
+    "llm_provider": "anthropic",  # or "openai"
+    "model_name": "claude-3-haiku-20240307",  # cost-effective for workflows
+    "api_key": "your-api-key-here",
+    "temperature": 0.1,  # Low temperature for consistent workflow behavior
+    "max_tokens": 1000,
 }

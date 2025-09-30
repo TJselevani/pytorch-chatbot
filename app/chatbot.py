@@ -113,7 +113,21 @@ class ChatBot:
         if prob.item() > 0.8 and tag in self.intents_data:
             intent_data = self.intents_data[tag]
             possible_responses = intent_data["responses"]
-            response = random.choice(possible_responses)
+
+            # Prioritize responses containing words from the user's input
+            user_words = set(message.lower().split())
+            matched_responses = [
+                resp
+                for resp in possible_responses
+                if any(word in resp.lower() for word in user_words)
+            ]
+
+            # If matched responses exist, pick one; otherwise, choose randomly
+            response = (
+                random.choice(matched_responses)
+                if matched_responses
+                else random.choice(possible_responses)
+            )
         else:
             # Default fallback response
             language = detect_language(message)
@@ -133,85 +147,12 @@ class ChatBot:
 
         return {self.bot_name: response}
 
-    def process_prompt(self, user_id, message):
-        """Processes the user message and returns chatbot response."""
-        # Define a function mapping for dynamic responses
-
-        # Check if user has an ongoing session (e.g., awaiting OTP)
-
-        if user_id in user_context and user_context[user_id]:
-            # Call `get_otp` directly to handle follow-up response
-            response = get_otp(self.bot_name, user_id, message)
-            if response:
-                return {self.bot_name: response}
-
-        ACTION_MAPPING = {
-            "weather": get_weather,
-            "otp_request_en": lambda: get_otp(self.bot_name, user_id, message),
-            "otp_request_sw": lambda: get_otp(self.bot_name, user_id, message),
-            "transfer_payment": lambda: transfer_payment(
-                self.bot_name, user_id, message
-            ),
-            "recover_payment": lambda: recover_payment(self.bot_name, user_id, message),
-            "booking_request": lambda: get_booking(self.bot_name, user_id, message),
-        }
-
-        # Detect language of the message
-        language = detect_language(message)
-
-        # Preprocess input sentence
-        sentence = tokenize(message)  # Tokenization
-        X = bag_of_words(sentence, self.all_words)  # Use improved BoW
-        X = X.reshape(1, X.shape[0])
-        X = torch.from_numpy(X).to(self.device)
-
-        output = self.model(X)
-        _, predicted = torch.max(output, dim=1)
-        tag = self.tags[predicted.item()]
-
-        probs = torch.softmax(output, dim=1)
-        prob = probs[0][predicted.item()]
-
-        if prob.item() > 0.8 and tag in self.intents_data:
-            intent_data = self.intents_data[tag]
-            possible_responses = intent_data["responses"]
-
-            # Prioritize responses containing words from the user's input
-            user_words = set(message.lower().split())
-            matched_responses = [
-                resp
-                for resp in possible_responses
-                if any(word in resp.lower() for word in user_words)
-            ]
-
-            # If matched responses exist, pick one; otherwise, choose randomly
-            response = (
-                random.choice(matched_responses)
-                if matched_responses
-                else random.choice(possible_responses)
-            )
-        else:
-            # Default fallback response
-            response_map = {
-                "en": "I do not understand. Could you please clarify?",
-                "sw": "Sielewi. Tafadhali fafanua.",
-            }
-            response = response_map.get(language, response_map["en"])
-
-        # Check for special requests
-        # Check if the intent has a function mapped to it
-        if tag in ACTION_MAPPING:
-            # Execute function dynamically
-            return ACTION_MAPPING[tag]()
-
-        return {self.bot_name: response}
-
     def chat_terminal(self):
         """Run chatbot in terminal mode."""
         print(f"{self.bot_name}: Hello! Type 'quit' to exit.")
         while True:
             user_input = input("You: ")
-            if user_input.lower() == "quit":
+            if user_input.lower() == "quit" or user_input.lower() == "exit":
                 print(f"{self.bot_name}: Goodbye!")
                 break
             response = self.process_message("terminal_user", user_input)

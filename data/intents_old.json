@@ -202,6 +202,7 @@
         "Ili kuweka nafasi yako kwenye gari, toa maelezo ya safari yako: Nafasi Kutoka <Eneo A> hadi <Eneo B>."
       ]
     },
+
     {
       "tag": "booking_request_en",
       "category": "booking",
@@ -247,6 +248,7 @@
       ],
       "responses": ["{DYNAMIC}"]
     },
+
     {
       "tag": "transfer_info_en",
       "category": "account",
@@ -262,6 +264,7 @@
         "To initiate a transfer, simply type 'Transfer {amount} from {source_fleet} to {destination_fleet}'. For example, 'Transfer 500 from sm34 to sm45'."
       ]
     },
+
     {
       "tag": "transfer_info_sw",
       "category": "account",
@@ -277,6 +280,7 @@
         "Ili kuanzisha ubadilishaji, andika tu 'Peleka {amount} kutoka {source_fleet} hadi {destination_fleet}'. Kwa mfano, 'Peleka 500 kutoka sm34 hadi sm45'."
       ]
     },
+
     {
       "tag": "transfer_request",
       "category": "account",
@@ -300,6 +304,7 @@
       ],
       "responses": ["{DYNAMIC}"]
     },
+
     {
       "tag": "recover_info_en",
       "category": "account",
@@ -315,6 +320,7 @@
         "To recover money sent to the wrong fleet, simply type 'Recover {amount} from {wrong_fleet} to {correct_fleet}'. For example, 'Recover 500 from sm34 to sm45'."
       ]
     },
+
     {
       "tag": "recover_info_sw",
       "category": "account",
@@ -330,6 +336,7 @@
         "Ili kurejesha pesa zilizotumwa kwa kikosi kisichosahihi, andika tu 'Rejesha {amount} kutoka {wrong_fleet} hadi {correct_fleet}'. Kwa mfano, 'Rejesha 500 kutoka sm34 hadi sm45'."
       ]
     },
+
     {
       "tag": "recover_request",
       "category": "account",
