@@ -45,6 +45,11 @@ def train():
             all_words.extend(w)
             xy.append((w, tag))
 
+        # for pattern in patterns:
+        #     w = tokenize(pattern)
+        #     all_words.extend(w)
+        #     xy.append((w, tag))
+
     # Close database connection
     conn.close()
 

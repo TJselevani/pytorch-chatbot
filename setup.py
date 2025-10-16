@@ -2,7 +2,7 @@ import subprocess
 import os
 import sys
 import signal
-from config import DB_INITIALIZED_FILE, TRAINING_DATA_FILE
+from config.settings import DB_INITIALIZED_FILE, TRAINING_DATA_FILE
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__))))
@@ -65,6 +65,7 @@ def main():
             print("\n🔴 Received SIGINT, terminating app process...")
             app_process.terminate()
             app_process.wait()  # Wait for the process to terminate
+            sys.exit(0)
 
     except subprocess.CalledProcessError as e:
         print(f"Error running script: {e}")

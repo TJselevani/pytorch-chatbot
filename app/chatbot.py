@@ -1,52 +1,90 @@
+"""
+Base PyTorch chatbot for intent classification.
+This is your existing chatbot that the hybrid system extends.
+"""
+
+import json
+import logging
 import random
 import torch
 
-from utils.nltk_utils import bag_of_words, tokenize
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from nn.neural_network import NeuralNet
+from config.settings import PYTORCH_CONFIG
+from utils.language import detect_language
 from database.db_connection import cursor
-from models.neural_net import NeuralNet
-from lib.logger import Logger
-from utils.context import user_context
-from utils.match import detect_language, normalize_tag
-from utils.actions import get_weather
-from utils.requests.booking_request import get_booking
-from utils.requests.otp_request import get_otp
-from utils.requests.recover_request import recover_payment
-from utils.requests.transfer_request import transfer_payment
 
 
-logger = Logger(name="chatbot").get_logger()
+logger = logging.getLogger(__name__)
 
 
 class ChatBot:
-    def __init__(self, file_path, bot_name="Sam"):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.FILE = file_path
-        self.bot_name = bot_name
-        self.load_model()
-        self.load_intents()
+    """Hybrid PyTorch chatbot using both DB and JSON intents with intelligent response matching."""
 
-    def load_model(self):
-        """Load chatbot model from file."""
-        data = torch.load(self.FILE)
+    def __init__(self, model_path, intents_path, bot_name="Sam"):
+        self.bot_name = bot_name
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        # Load model
+        self._load_model(model_path)
+
+        # Load intents (DB preferred, fallback to JSON)
+        try:
+            self.load_intents_from_db()
+            logger.info("Loaded intents from database.")
+        except (RuntimeError, ConnectionError, TimeoutError, ValueError) as e:
+            logger.warning(f"DB intents load failed: {e}, falling back to JSON.")
+            self.load_intents_from_json(intents_path)
+
+        logger.info("ChatBot '%s' initialized on %s", bot_name, self.device)
+
+    # -------------------------
+    # Loading Model & Intents
+    # -------------------------
+    def _load_model(self, model_path):
+        """Load trained PyTorch model from file."""
+        data = torch.load(model_path, map_location=self.device)
         self.input_size = data["input_size"]
         self.hidden_size = data["hidden_size"]
         self.output_size = data["output_size"]
         self.all_words = data["all_words"]
         self.tags = data["tags"]
-        self.model_state = data["model_state"]
+        model_state = data["model_state"]
 
         self.model = NeuralNet(self.input_size, self.hidden_size, self.output_size).to(
             self.device
         )
-        self.model.load_state_dict(self.model_state)
+        self.model.load_state_dict(model_state)
         self.model.eval()
 
-    def load_intents(self):
+        logger.info(
+            f"Model loaded: {len(self.tags)} intents, {len(self.all_words)} words"
+        )
+
+    def load_intents_from_json(self, intents_path):
+        """Fallback: Load intents from JSON file."""
+        with open(intents_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        self.intents_data = {
+            intent["tag"]: {
+                "patterns": intent["patterns"],
+                "responses": intent["responses"],
+            }
+            for intent in data["intents"]
+        }
+
+    def load_intents_from_db(self):
         """Fetch intents, patterns, and responses from MySQL database."""
         cursor.execute("SELECT id, tag FROM intents")
         intents = cursor.fetchall()
-        self.intents_data = {}
+        if not intents:
+            raise ValueError("No intents found in database")
 
+        self.intents_data = {}
         for intent_id, tag in intents:
             cursor.execute(
                 "SELECT pattern FROM patterns WHERE intent_id = %s", (intent_id,)
@@ -60,61 +98,38 @@ class ChatBot:
 
             self.intents_data[tag] = {"patterns": patterns, "responses": responses}
 
+    # -------------------------
+    # Core Message Processing
+    # -------------------------
+
     def process_message(self, user_id, message):
-        """Processes user messages, handles follow-ups, and returns chatbot response."""
+        """
+        Process message and return response.
+        This is the method that HybridChatBot will override.
+        """
+        from utils.nltk_utils import tokenize, bag_of_words
 
-        # Ensure user context entry exists
-        if user_id not in user_context:
-            user_context[user_id] = {}  # Initialize user context if missing
-
-        # Define action mapping for intent-specific responses
-        ACTION_MAPPING = {
-            "weather": lambda: get_weather(),
-            "otp_request_en": lambda: get_otp(self.bot_name, user_id, message),
-            "otp_request_sw": lambda: get_otp(self.bot_name, user_id, message),
-            "otp_verification": lambda: get_otp(self.bot_name, user_id, message),
-            "transfer_request": lambda: transfer_payment(
-                self.bot_name, user_id, message
-            ),
-            "recover_request": lambda: recover_payment(self.bot_name, user_id, message),
-            "booking_request_en": lambda: get_booking(self.bot_name, user_id, message),
-            "booking_request_sw": lambda: get_booking(self.bot_name, user_id, message),
-        }
-
-        # Normalize all keys in ACTION_MAPPING to ensure consistency
-        normalized_mapping = {normalize_tag(k): v for k, v in ACTION_MAPPING.items()}
-
-        # Check if the user has an ongoing context requiring a follow-up
-        if user_id in user_context and user_context[user_id]:
-            for tag, action in normalized_mapping.items():  # Use normalized keys
-                if user_context[user_id].get(f"awaiting_{tag}"):
-                    response = action()  # Call the corresponding function
-                    if response:
-                        # Clear follow-up flag
-                        # user_context[user_id].pop(f"awaiting_{tag}", None)
-                        return {self.bot_name: response}
-
-        # Intent detection (normal chatbot processing)
+        # Tokenize and create bag of words
         sentence = tokenize(message)
         X = bag_of_words(sentence, self.all_words)
         X = X.reshape(1, X.shape[0])
         X = torch.from_numpy(X).to(self.device)
 
+        # Get prediction
         output = self.model(X)
         _, predicted = torch.max(output, dim=1)
         tag = self.tags[predicted.item()]
 
-        # Normalize detected tag to match our updated mapping
-        normalized_tag = normalize_tag(tag)
-
         probs = torch.softmax(output, dim=1)
         prob = probs[0][predicted.item()]
 
-        if prob.item() > 0.8 and tag in self.intents_data:
+        # Find response for tag
+        # Confidence check
+        if prob.item() > 0.75 and tag in self.intents_data:
             intent_data = self.intents_data[tag]
             possible_responses = intent_data["responses"]
 
-            # Prioritize responses containing words from the user's input
+            # Find responses that contain user words
             user_words = set(message.lower().split())
             matched_responses = [
                 resp
@@ -122,38 +137,44 @@ class ChatBot:
                 if any(word in resp.lower() for word in user_words)
             ]
 
-            # If matched responses exist, pick one; otherwise, choose randomly
             response = (
                 random.choice(matched_responses)
                 if matched_responses
                 else random.choice(possible_responses)
             )
         else:
-            # Default fallback response
+            # Default fallback with language detection
             language = detect_language(message)
-            response_map = {
-                "en": "I do not understand. Could you please clarify?",
-                "sw": "Sielewi. Tafadhali fafanua.",
-            }
-            response = response_map.get(language, response_map["en"])
-
-        # If an intent matches a mapped function, execute it
-        if normalized_tag in normalized_mapping:
-            # Set follow-up state using normalized key
-            user_context[user_id][f"awaiting_{normalized_tag}"] = True
-            return normalized_mapping[
-                normalized_tag
-            ]()  # Call the corresponding function
+            response = {
+                "en": "I'm not sure I understand. Could you rephrase that?",
+                "sw": "Sielewi vizuri. Tafadhali fafanua.",
+            }.get(language, "I'm not sure I understand.")
 
         return {self.bot_name: response}
 
+    # -------------------------
+    # Terminal Chat Interface
+    # -------------------------
     def chat_terminal(self):
-        """Run chatbot in terminal mode."""
         print(f"{self.bot_name}: Hello! Type 'quit' to exit.")
         while True:
             user_input = input("You: ")
-            if user_input.lower() == "quit" or user_input.lower() == "exit":
+            if user_input.lower() in ["quit", "exit"]:
                 print(f"{self.bot_name}: Goodbye!")
                 break
             response = self.process_message("terminal_user", user_input)
             print(f"{self.bot_name}: {response[self.bot_name]}")
+
+
+def main():
+    chatbot = ChatBot(
+        model_path=PYTORCH_CONFIG["model_path"],
+        intents_path=PYTORCH_CONFIG["intents_path"],
+        bot_name="ai-app",
+    )
+
+    chatbot.chat_terminal()
+
+
+if __name__ == "__main__":
+    main()
