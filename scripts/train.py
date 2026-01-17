@@ -1,19 +1,25 @@
 import os
 import sys
 import numpy as np
-import random
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 # Add project root to sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Import from relative paths based on the new structure
-from utils.nltk_utils import bag_of_words, tokenize, stem
+from utils.nltk_utils import (
+    bag_of_words,
+    # tokenize,
+    stem,
+    preprocess_text,
+    augment_sentence,
+)
 from models.neural_net import NeuralNet
 from database.db_connection import conn, cursor
 from config import TRAINING_DATA_FILE
+
 
 def train():
     # Fetch intents and their patterns
@@ -28,19 +34,27 @@ def train():
         tags.append(tag)
 
         # Fetch patterns for the current intent
-        cursor.execute("SELECT pattern FROM patterns WHERE intent_id = %s", (intent_id,))
+        cursor.execute(
+            "SELECT pattern FROM patterns WHERE intent_id = %s", (intent_id,)
+        )
         patterns = [row[0] for row in cursor.fetchall()]
 
         for pattern in patterns:
-            w = tokenize(pattern)
+            augmented_pattern = augment_sentence(pattern)
+            w = preprocess_text(augmented_pattern)
             all_words.extend(w)
             xy.append((w, tag))
+
+        # for pattern in patterns:
+        #     w = tokenize(pattern)
+        #     all_words.extend(w)
+        #     xy.append((w, tag))
 
     # Close database connection
     conn.close()
 
     # Stem and preprocess words
-    ignore_words = ['?', '.', '!']
+    ignore_words = ["?", ".", "!", "{", "}", "+", "-", ";", ":"]
     all_words = [stem(w) for w in all_words if w not in ignore_words]
     all_words = sorted(set(all_words))
     tags = sorted(set(tags))
@@ -52,10 +66,11 @@ def train():
     # create training data
     X_train = []
     y_train = []
-    for (pattern_sentence, tag) in xy:
+    for pattern_sentence, tag in xy:
         # X: bag of words for each pattern_sentence
         bag = bag_of_words(pattern_sentence, all_words)
         X_train.append(bag)
+
         # y: PyTorch CrossEntropyLoss needs only class labels, not one-hot
         label = tags.index(tag)
         y_train.append(label)
@@ -63,7 +78,7 @@ def train():
     X_train = np.array(X_train)
     y_train = np.array(y_train)
 
-    # Hyper-parameters 
+    # Hyper-parameters
     num_epochs = 1000
     batch_size = 8
     learning_rate = 0.001
@@ -87,12 +102,11 @@ def train():
             return self.n_samples
 
     dataset = ChatDataset()
-    train_loader = DataLoader(dataset=dataset,
-                            batch_size=batch_size,
-                            shuffle=True,
-                            num_workers=0)
+    train_loader = DataLoader(
+        dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=0
+    )
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = NeuralNet(input_size, hidden_size, output_size).to(device)
 
@@ -102,25 +116,25 @@ def train():
 
     # Train the model
     for epoch in range(num_epochs):
-        for (words, labels) in train_loader:
+        for words, labels in train_loader:
             words = words.to(device)
             labels = labels.to(dtype=torch.long).to(device)
-            
+
             # Forward pass
             outputs = model(words)
             # if y would be one-hot, we must apply
             # labels = torch.max(labels, 1)[1]
             loss = criterion(outputs, labels)
-            
+
             # Backward and optimize
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            
-        if (epoch+1) % 100 == 0:
-            print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
 
-    print(f'final loss: {loss.item():.4f}')
+        if (epoch + 1) % 100 == 0:
+            print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}")
+
+    print(f"final loss: {loss.item():.4f}")
 
     data = {
         "model_state": model.state_dict(),
@@ -128,12 +142,13 @@ def train():
         "hidden_size": hidden_size,
         "output_size": output_size,
         "all_words": all_words,
-        "tags": tags
+        "tags": tags,
     }
 
     # Save model to the path defined in config
     torch.save(data, TRAINING_DATA_FILE)
-    print(f'Training complete. File saved to {TRAINING_DATA_FILE}')
+    print(f"Training complete. File saved to {TRAINING_DATA_FILE}")
+
 
 if __name__ == "__main__":
     train()

@@ -1,11 +1,13 @@
 import json
 import sys
 import os
-from .db_connection import cursor, conn
-from config import INTENTS_FILE
 
 # Add project root to sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from database.db_connection import cursor, conn
+from config import INTENTS_FILE
+
 
 def load_data_into_db():
     """
@@ -13,23 +15,46 @@ def load_data_into_db():
     """
 
     # Load JSON data
-    with open(INTENTS_FILE, "r") as f:
+    with open(INTENTS_FILE, "r", encoding="utf-8") as f:
         intents_data = json.load(f)
 
     for intent in intents_data["intents"]:
         tag = intent["tag"]
+        category = intent.get("category", "general")  # Default category if not provided
+        context = intent.get("context")  # Might be None
+        language = intent.get("language")  # Might be None
 
-        # Insert tag into `intents` table
-        cursor.execute("INSERT IGNORE INTO intents (tag) VALUES (%s)", (tag,))
-        
+        # Insert intent into `intents` table
+        cursor.execute(
+            """
+            INSERT IGNORE INTO intents (tag, category, context, language)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (tag, category, context, language),
+        )
+
         # Get the intent_id
         cursor.execute("SELECT id FROM intents WHERE tag = %s", (tag,))
         intent_id = cursor.fetchone()[0]
 
         # Insert patterns into `patterns` table
         for pattern in intent["patterns"]:
-            cursor.execute("INSERT INTO patterns (intent_id, pattern) VALUES (%s, %s)", (intent_id, pattern))
+            cursor.execute(
+                "INSERT INTO patterns (intent_id, pattern) VALUES (%s, %s)",
+                (intent_id, pattern),
+            )
 
         # Insert responses into `responses` table
         for response in intent["responses"]:
-            cursor.execute("INSERT INTO responses (intent_id, response) VALUES (%s, %s)", (intent_id, response))
+            cursor.execute(
+                "INSERT INTO responses (intent_id, response) VALUES (%s, %s)",
+                (intent_id, response),
+            )
+
+    # Commit the changes
+    conn.commit()
+    print("✅ Intents data imported successfully!")
+
+
+if __name__ == "__main__":
+    load_data_into_db()

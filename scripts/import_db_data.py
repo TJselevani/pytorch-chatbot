@@ -1,11 +1,13 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import json
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+
 from database.create_data import load_data_into_db
 from database.db_connection import conn, cursor
 from config import DB_INITIALIZED_FILE
+
 
 def main():
     """
@@ -26,6 +28,7 @@ def main():
     finally:
         cursor.close()
         conn.close()
+
 
 if __name__ == "__main__":
     main()

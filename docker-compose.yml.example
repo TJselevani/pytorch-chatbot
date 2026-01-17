@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  chatbot:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - OTP_SERVICE_URL=http://otp-service:8001
+      - BOOKING_SERVICE_URL=http://booking-service:8002
+      - ROUTE_SERVICE_URL=http://route-service:8003
+    volumes:
+      - ./checkpoints:/app/checkpoints
+      - ./logs:/app/logs
+    depends_on:
+      - otp-service
+      - booking-service
+      - route-service
+  
+  otp-service:
+    image: your-otp-service:latest
+    ports:
+      - "8001:8001"
+  
+  booking-service:
+    image: your-booking-service:latest
+    ports:
+      - "8002:8002"
+  
+  route-service:
+    image: your-route-service:latest
+    ports:
+      - "8003:8003"
+

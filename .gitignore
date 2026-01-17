@@ -141,3 +141,9 @@ cython_debug/
 data/data.pth
 data/db_initialized.txt
 data/training_data.pth
+app/save.py
+lib/savefiles/
+
+logs
+notes/
+

@@ -1,9 +1,11 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from database.create_db import create_tables
 from database.db_connection import conn, cursor
+
 
 def main():
     """
@@ -19,6 +21,7 @@ def main():
     finally:
         cursor.close()
         conn.close()
+
 
 if __name__ == "__main__":
     main()
