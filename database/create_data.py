@@ -1,11 +1,12 @@
 import json
 import sys
 import os
-from .db_connection import cursor, conn
+from database.db_connection import cursor, conn
 from config import INTENTS_FILE
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 
 def load_data_into_db():
     """
@@ -21,7 +22,7 @@ def load_data_into_db():
 
         # Insert tag into `intents` table
         cursor.execute("INSERT IGNORE INTO intents (tag) VALUES (%s)", (tag,))
-        
+
         # Get the intent_id
         cursor.execute("SELECT id FROM intents WHERE tag = %s", (tag,))
         intent_id = cursor.fetchone()[0]

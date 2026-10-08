@@ -15,7 +15,7 @@ DB_INITIALIZED_FILE = os.path.join(DATA_DIR, "db_initialized.txt")
 # Database configuration
 DB_CONFIG = {
     "host": "localhost",
-    "user": "superuser",
+    "user": "MernAdmin",
     "password": "developer",
     "database": "chatbot_db"
 }

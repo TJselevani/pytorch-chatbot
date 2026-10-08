@@ -101,7 +101,7 @@ class ChatBot:
         print(f"{self.bot_name}: Hello! Type 'quit' to exit.")
         while True:
             user_input = input("You: ")
-            if user_input.lower() == "quit":
+            if user_input.lower() == "quit" or user_input.lower() == "exit":
                 print(f"{self.bot_name}: Goodbye!")
                 break
             response = self.process_message(user_input)

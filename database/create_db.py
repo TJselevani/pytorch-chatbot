@@ -1,4 +1,4 @@
-from .db_connection import cursor, conn
+from database.db_connection import cursor, conn
 from config import DB_CONFIG
 
 def create_tables():

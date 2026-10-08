@@ -15,6 +15,7 @@ from models.neural_net import NeuralNet
 from database.db_connection import conn, cursor
 from config import TRAINING_DATA_FILE
 
+
 def train():
     # Fetch intents and their patterns
     cursor.execute("SELECT id, tag FROM intents")
@@ -88,9 +89,9 @@ def train():
 
     dataset = ChatDataset()
     train_loader = DataLoader(dataset=dataset,
-                            batch_size=batch_size,
-                            shuffle=True,
-                            num_workers=0)
+                              batch_size=batch_size,
+                              shuffle=True,
+                              num_workers=0)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -105,20 +106,20 @@ def train():
         for (words, labels) in train_loader:
             words = words.to(device)
             labels = labels.to(dtype=torch.long).to(device)
-            
+
             # Forward pass
             outputs = model(words)
             # if y would be one-hot, we must apply
             # labels = torch.max(labels, 1)[1]
             loss = criterion(outputs, labels)
-            
+
             # Backward and optimize
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            
-        if (epoch+1) % 100 == 0:
-            print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
+
+        if (epoch + 1) % 100 == 0:
+            print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}')
 
     print(f'final loss: {loss.item():.4f}')
 
@@ -134,6 +135,7 @@ def train():
     # Save model to the path defined in config
     torch.save(data, TRAINING_DATA_FILE)
     print(f'Training complete. File saved to {TRAINING_DATA_FILE}')
+
 
 if __name__ == "__main__":
     train()
