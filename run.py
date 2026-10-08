@@ -1,7 +1,10 @@
 import subprocess
 import os
 import sys
-from config import DB_INITIALIZED_FILE, TRAINING_DATA_FILE
+from config import settings
+
+DB_INITIALIZED_FILE = settings.db_initialized_file
+TRAINING_DATA_FILE = settings.training_data_file
 
 def main():
     """

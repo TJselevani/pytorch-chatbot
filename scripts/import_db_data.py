@@ -6,7 +6,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 import json
 from database.create_data import load_data_into_db
 from database.db_connection import conn, cursor
-from config import DB_INITIALIZED_FILE
+from config import settings
+
+DB_INITIALIZED_FILE = settings.db_initialized_file
 
 
 def main():

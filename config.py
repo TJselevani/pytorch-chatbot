@@ -1,29 +1,55 @@
-import os
+from pathlib import Path
 
-# Determine the project root directory
-# Assuming this script is in the root of your project
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Construct an absolute path to the data directory
-DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+# Project root
+PROJECT_ROOT = Path(__file__).resolve().parent
 
-# Define paths to important files
-INTENTS_FILE = os.path.join(DATA_DIR, "intents.json")
-TRAINING_DATA_FILE = os.path.join(DATA_DIR, "training_data.pth")
-DB_INITIALIZED_FILE = os.path.join(DATA_DIR, "db_initialized.txt")
 
-# Database configuration
-DB_CONFIG = {
-    "host": "localhost",
-    "user": "MernAdmin",
-    "password": "developer",
-    "database": "chatbot_db"
-}
+class Settings(BaseSettings):
+    # -------------------------------------------------------------------------
+    # Database
+    # -------------------------------------------------------------------------
 
-# Model configuration
-MODEL_CONFIG = {
-    "hidden_size": 8,
-    "num_epochs": 1000,
-    "batch_size": 8,
-    "learning_rate": 0.001
-}
+    db_host: str = "localhost"
+    db_port: int = 3306
+    db_user: str
+    db_password: str
+    db_database: str
+
+    # -------------------------------------------------------------------------
+    # Model
+    # -------------------------------------------------------------------------
+
+    model_hidden_size: int = 8
+    model_num_epochs: int = 1000
+    model_batch_size: int = 8
+    model_learning_rate: float = 0.001
+
+    # -------------------------------------------------------------------------
+    # Paths
+    # -------------------------------------------------------------------------
+
+    project_root: Path = PROJECT_ROOT
+
+    data_dir: Path = PROJECT_ROOT / "data"
+
+    intents_file: Path = PROJECT_ROOT / "data" / "intents.json"
+
+    training_data_file: Path = (
+            PROJECT_ROOT / "data" / "training_data.pth"
+    )
+
+    db_initialized_file: Path = (
+            PROJECT_ROOT / "data" / "db_initialized.txt"
+    )
+
+    model_config = SettingsConfigDict(
+        env_file=PROJECT_ROOT / ".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+
+
+settings = Settings()

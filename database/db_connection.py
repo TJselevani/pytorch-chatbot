@@ -1,12 +1,14 @@
 import mysql.connector
-from config import DB_CONFIG
 
-# Create database connection
+from config import settings
+
+# Create DB connection
 conn = mysql.connector.connect(
-    host=DB_CONFIG["host"],
-    user=DB_CONFIG["user"],
-    password=DB_CONFIG["password"],
-    database=DB_CONFIG["database"]
+    host=settings.db_host,
+    port=settings.db_port,
+    user=settings.db_user,
+    password=settings.db_password,
+    database=settings.db_database,
 )
 
 # Create cursor

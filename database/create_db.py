@@ -1,5 +1,7 @@
 from database.db_connection import cursor, conn
-from config import DB_CONFIG
+from config import settings
+
+DATABASE = settings.db_database
 
 def create_tables():
     """
@@ -7,8 +9,8 @@ def create_tables():
     """
 
     # Create database if it doesn't exist
-    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_CONFIG['database']}")
-    cursor.execute(f"USE {DB_CONFIG['database']}")
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DATABASE}")
+    cursor.execute(f"USE {DATABASE}")
     
     # Create a table for intents
     cursor.execute('''

@@ -13,7 +13,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from utils.nltk_utils import bag_of_words, tokenize, stem
 from models.neural_net import NeuralNet
 from database.db_connection import conn, cursor
-from config import TRAINING_DATA_FILE
+from config import settings
+
+TRAINING_DATA_FILE = settings.training_data_file
 
 
 def train():
@@ -65,11 +67,11 @@ def train():
     y_train = np.array(y_train)
 
     # Hyper-parameters 
-    num_epochs = 1000
-    batch_size = 8
-    learning_rate = 0.001
+    num_epochs = settings.model_num_epochs
+    batch_size = settings.model_batch_size
+    learning_rate = settings.model_learning_rate
     input_size = len(X_train[0])
-    hidden_size = 8
+    hidden_size = settings.model_hidden_size
     output_size = len(tags)
     print(input_size, output_size)
 

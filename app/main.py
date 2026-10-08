@@ -3,7 +3,9 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from app.chatbot import ChatBot
-from config import TRAINING_DATA_FILE
+from config import settings
+
+TRAINING_DATA_FILE = settings.training_data_file
 
 app = FastAPI()
 

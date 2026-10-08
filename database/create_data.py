@@ -2,7 +2,9 @@ import json
 import sys
 import os
 from database.db_connection import cursor, conn
-from config import INTENTS_FILE
+from config import settings
+
+INTENTS_FILE = settings.intents_file
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
