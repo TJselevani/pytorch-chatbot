@@ -34,42 +34,18 @@ Windows:
 venv\Scripts\activate
 ```
 
-### Install PyTorch and dependencies
+### Install PyTorch (CPU build) and dependencies
 
-For Installation of PyTorch see [official website](https://pytorch.org/).
-
-Or install torch using the command below: `will use CPU only`:
+Install only what the chatbot uses. The CPU build of PyTorch avoids downloading several gigabytes of CUDA packages:
 
 ```console
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
 ```
 
-You also need `nltk`:
+`torchvision` and `torchaudio` are not needed. NLTK is only needed for tokenising in `nltk_utils.py`; see the
+note below if you want to drop it.
 
-```console
-pip install nltk
-```
-
-If you get an error during the first run, you also need to install `nltk.tokenize.punkt`:
-Run this once in your terminal:
-
-```console
-$ python
->>> import nltk
->>> nltk.download('punkt')
-```
-
-Or have other errors such as `punkt_tab`:
-
-```console
-python -c "import nltk; nltk.download('punkt_tab')"
-```
-
-Run this to use fastAPI endpoint
-
-```console
-pip install fastapi uvicorn
-```
 
 ## Usage
 
@@ -130,3 +106,4 @@ Have a look at [intents.json](intents.json). You can customize it according to y
 ## Watch the Tutorial
 
 [![Alt text](https://img.youtube.com/vi/RpWeNzfSUHw/hqdefault.jpg)](https://www.youtube.com/watch?v=RpWeNzfSUHw&list=PLqnslRFeH2UrFW4AUgn-eY37qOAWQpJyg)
+
